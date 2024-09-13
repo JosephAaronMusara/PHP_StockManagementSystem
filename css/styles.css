@@ -267,3 +267,14 @@ h1, h2, h3 {
         transform: scale(1);
     }
 }
+
+.content-section {
+    display: none;
+}
+.active-section {
+    display: block;
+}
+.dashboard-nav ul li a.active {
+    font-weight: bold;
+    color: blue;
+}
