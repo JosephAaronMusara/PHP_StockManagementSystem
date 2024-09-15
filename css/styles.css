@@ -79,7 +79,7 @@ h1, h2, h3 {
 }
 
 .auth-form input {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ddd;
@@ -87,7 +87,7 @@ h1, h2, h3 {
 }
 
 .auth-form button {
-    width: 100%;
+    width: 97%;
     padding: 10px;
     background-color: #007bff;
     color: #fff;
@@ -277,4 +277,8 @@ h1, h2, h3 {
 .dashboard-nav ul li a.active {
     font-weight: bold;
     color: blue;
+}
+#err-msg{
+    color: red;
+    position: relative;
 }

@@ -8,10 +8,10 @@
 </head>
 <body>
     <div class="auth-container">
-        <form class="auth-form" action="login.php" method="POST">
+        <form class="auth-form" action="../includes/login.inc.php" method="POST">
             <h2>Login</h2>
             <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="password" name="pwd" placeholder="Password" required>
             <button type="submit">Login</button>
             <p>Don't have an account? <a href="register.php">Register</a></p>
         </form>

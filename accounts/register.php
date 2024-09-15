@@ -8,13 +8,14 @@
 </head>
 <body>
     <div class="auth-container">
-        <form class="auth-form" action="register.php" method="POST">
+        <form id="auth-form" class="auth-form" action="../includes/createuser.inc.php" method="POST">
             <h2>Create Account</h2>
             <input type="text" name="username" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
-            <button type="submit">Register</button>
+            <input id="pwd" type="password" name="pwd" placeholder="Password" required>
+            <input id="confirm_pwd" type="password" name="confirm_pwd" placeholder="Confirm Password" required>
+            
+            <button id="registerBtn" type="submit" >Register</button>
             <p>Already have an account? <a href="login.php">Login</a></p>
         </form>
     </div>

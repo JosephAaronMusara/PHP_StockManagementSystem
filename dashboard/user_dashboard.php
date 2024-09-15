@@ -1,5 +1,10 @@
 <?php
-    $username = "Uncle";
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit;
+}
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,8 +19,8 @@
         <header class="dashboard-header">
             <h1>User Stock Management</h1>
             <div class="user-info">
-                <span>Welcome, <?php echo $username ?></span>
-                <a href="logout.php">Logout</a>
+                <span>Welcome, <?php echo $_SESSION['username'] ."!" ?></span>
+                <a href="../accounts/logout.php">Logout</a>
             </div>
         </header>
         <main class="dashboard-content">

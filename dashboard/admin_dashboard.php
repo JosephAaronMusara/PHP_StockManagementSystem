@@ -18,7 +18,7 @@ $username = "Uncle";
             <h1>Stock Management - ADMIN</h1>
             <div class="user-info">
                 <span>Welcome, <?php echo $username ?></span>
-                <a href="logout.php">Logout</a>
+                <a href="../accounts/logout.php">Logout</a>
             </div>
         </header>
 

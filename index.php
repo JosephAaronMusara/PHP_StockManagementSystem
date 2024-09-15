@@ -12,8 +12,8 @@
             <h1>Welcome to the Stock Management System</h1>
             <p>Manage your inventory efficiently and keep track of sales and purchases with ease.</p>
             <div class="welcome-buttons">
-                <a href="authentication/login.php" class="button">Login</a>
-                <a href="authentication/register.php" class="button">Sign Up</a>
+                <a href="accounts/login.php" class="button">Login</a>
+                <a href="accounts/register.php" class="button">Sign Up</a>
             </div>
         </div>
     </div>
