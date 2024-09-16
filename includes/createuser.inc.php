@@ -16,7 +16,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $statement = $pdo -> prepare($query);
     
             $statement -> bindParam(":username",$username);
-            $statement -> bindParam(":pwd",password_hash($pwd,PASSWORD_BCRYPT));
+            $statement -> bindParam(":pwd",password_hash($pwd,PASSWORD_BCRYPT,['cost'=>12]));
+            //cost is for hashing dificulty. The higher, the harder. Slows loadin. Recomemted 10 to 12
             $statement -> bindParam(":email",$email);
             $statement -> execute();
     
