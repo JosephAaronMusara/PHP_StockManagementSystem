@@ -27,14 +27,14 @@ class StockItem {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-        // Method to fetch all stock items
+        //R
         public function getAllStockItems() {
             $stmt = $this->pdo->prepare("SELECT * FROM stock_items");
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     
-        // Method to fetch a stock item by ID
+        //R
         public function getStockItemById($id) {
             $stmt = $this->pdo->prepare("SELECT * FROM stock_items WHERE id = ?");
             $stmt->execute([$id]);
@@ -53,4 +53,3 @@ class StockItem {
 
 
 }
-?>
