@@ -22,8 +22,6 @@ class Supplier
          return ['id' => $this->pdo->lastInsertId(), 'message' => 'Supplier added successfully.'];
         }
         return ['error' => 'Failed to add Supplier.'];
-
-        return $stmt->execute([$name, $contact_info, $postal_address]);
     }
 
     //R
