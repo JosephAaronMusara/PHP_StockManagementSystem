@@ -21,7 +21,11 @@ class StockMovement {
     public function addStockMovement($data) {
         $stmt = $this->pdo->prepare("INSERT INTO stock_movements (stock_item_id, movement_type, quantity, user_id) 
                                     VALUES (?, ?, ?, ?, ?)");
-        return $stmt->execute([$data['stock_item_id'], $data['movement_type'], $data['quantity'], $data['user_id']]);
+        if($stmt->execute([$data['stock_item_id'], $data['movement_type'], $data['quantity'], $data['user_id']])){
+            return ['id' => $this->pdo->lastInsertId(), 'message' => 'Stock Movement added successfully.'];
+        }
+        return ['error' => 'Failed to execute query.'];
+
     }
 
     public function deleteStockMovement($id) {
