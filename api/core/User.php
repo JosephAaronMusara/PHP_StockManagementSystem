@@ -6,10 +6,18 @@ class User {
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-    public function register($username, $email, $password) {
-        $passwordHash = password_hash($password, PASSWORD_BCRYPT);
+    public function register($data) {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+        $stmt->execute([$data['username'], $data['email']]);
+        if ($stmt->fetch()) {
+            return ['error' => 'Username or email already exists.'];
+        }
+        $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
         $stmt = $this->pdo->prepare("INSERT INTO users (username, email, pwd) VALUES (?, ?, ?)");
-        return $stmt->execute([$username, $email, $passwordHash]);
+         if($stmt->execute([$data['username'], $data['email'], $passwordHash])){
+            return ['id' => $this->pdo->lastInsertId(), 'message' => 'User created successfully.'];
+         }
+         return ['error' => 'Failed to create user.'];
     }
 
     public function login($email, $password) {
@@ -25,6 +33,14 @@ class User {
         }
 
         return false;
+    }
+
+    public function deleteUser($id){
+        $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
+        if ($stmt->execute([$id])) {
+            return ['message' => 'User deleted successfully.'];
+        }
+        return ['error' => 'Failed to delete user.'];
     }
 
     public function logout() {
