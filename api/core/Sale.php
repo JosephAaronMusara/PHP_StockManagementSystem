@@ -27,11 +27,11 @@ class Sale
 
         $stmt = $this->pdo->prepare("INSERT INTO sales (user_id, total_amount) 
                                     VALUES (?, ?)");
-        if ($stmt->execute([$data['total_amount'], $data['user_id']])) {
-            $stmt = $this->pdo->prepare("INSERT INTO sale_details (sale_id, stock_item_id, quantity, unit_price, user_id) 
-            VALUES (?, ?, ?, ?, ?)");
-            if ($stmt->execute([$this->pdo->lastInsertId(), $data['stock_item_id'], $data['quantity'], $data['unit_price'], $data['user_id']])) {
-                return ['id' => $this->pdo->lastInsertId(), 'message' => 'Sale added successfully.'];
+        if ($stmt->execute([$data['user_id'],$data['total_amount']])) {
+            $stmt = $this->pdo->prepare("INSERT INTO sale_details (sale_id, stock_item_id, quantity, unit_price) 
+            VALUES (?, ?, ?, ?)");
+            if ($stmt->execute([$this->pdo->lastInsertId(), $data['stock_item_id'], $data['quantity'], $data['unit_price']])) {
+                return ['SaleDetailsId' => $this->pdo->lastInsertId(), 'message' => 'Sale added successfully.'];
             }
         }
         return ['error' => 'Failed to record the sale.'];
