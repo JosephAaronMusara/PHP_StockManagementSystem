@@ -21,8 +21,10 @@ class Alert {
     public function addAlert($data, $alert_type, $message, $created_at) {
         $stmt = $this->pdo->prepare("INSERT INTO alerts (user_id,stock_item_id, alert_type, message) 
                                     VALUES (?, ?, ?, ?)");
-                                    'user_id	alert_type	stock_item_id	message';
-        return $stmt->execute([$data['user_id'],$data['stock_item_id'], $data['alert_type'], $data['message']]);
+        if($stmt->execute([$data['user_id'],$data['stock_item_id'], $data['alert_type'], $data['message']])){
+            return ['id' => $this->pdo->lastInsertId(), 'message' => 'Alert added successfully.'];
+        }
+        return ['error' => 'Failed to add Alert.'];
     }
 
     public function deleteAlert($id) {
