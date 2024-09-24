@@ -1,26 +1,30 @@
 <?php
-class User {
+class User
+{
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-    public function register($username,$email,$password) {
+    public function register($username, $email, $role, $password)
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
         $stmt->execute([$username, $email]);
         if ($stmt->fetch()) {
             return ['error' => 'Username or email already exists.'];
         }
         $passwordHash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, email, pwd) VALUES (?, ?, ?)");
-         if($stmt->execute([$username, $email, $passwordHash])){
+        $stmt = $this->pdo->prepare("INSERT INTO users (username, email, role, pwd) VALUES (?, ?, ?, ?)");
+        if ($stmt->execute([$username, $email, $role, $passwordHash])) {
             return ['id' => $this->pdo->lastInsertId(), 'message' => 'User created successfully.'];
-         }
-         return ['error' => 'Failed to create user.'];
+        }
+        return ['error' => 'Failed to create user.'];
     }
 
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -35,7 +39,8 @@ class User {
         return false;
     }
 
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
         if ($stmt->execute([$id])) {
             return ['message' => 'User deleted successfully.'];
@@ -43,10 +48,10 @@ class User {
         return ['error' => 'Failed to delete user.'];
     }
 
-    public function logout() {
+    public function logout()
+    {
         session_start();
         session_destroy();
         return true;
     }
 }
-?>
