@@ -6,15 +6,15 @@ class User {
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-    public function register($data) {
+    public function register($username,$email,$password) {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$data['username'], $data['email']]);
+        $stmt->execute([$username, $email]);
         if ($stmt->fetch()) {
             return ['error' => 'Username or email already exists.'];
         }
-        $passwordHash = password_hash($data['password'], PASSWORD_BCRYPT);
+        $passwordHash = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $this->pdo->prepare("INSERT INTO users (username, email, pwd) VALUES (?, ?, ?)");
-         if($stmt->execute([$data['username'], $data['email'], $passwordHash])){
+         if($stmt->execute([$username, $email, $passwordHash])){
             return ['id' => $this->pdo->lastInsertId(), 'message' => 'User created successfully.'];
          }
          return ['error' => 'Failed to create user.'];

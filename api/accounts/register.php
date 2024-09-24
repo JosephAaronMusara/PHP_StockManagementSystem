@@ -1,4 +1,6 @@
 <?php
+require '../includes/config.php';
+require '../includes/headers.php';
 require '../core/Database.php';
 require '../core/User.php';
 
