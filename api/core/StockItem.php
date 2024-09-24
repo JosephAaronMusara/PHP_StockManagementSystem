@@ -40,14 +40,21 @@ class StockItem {
     // }
         //R
         public function getAllStockItems() {
-            $stmt = $this->pdo->prepare("SELECT * FROM stock_items");
+            $query = "SELECT stock_items.*, categories.name AS category_name, suppliers.name AS supplier_name FROM stock_items 
+            LEFT JOIN categories ON stock_items.category_id = categories.id 
+            LEFT JOIN suppliers ON stock_items.supplier_id = suppliers.id";
+            $stmt = $this->pdo->prepare($query);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     
         //R
         public function getStockItemById($id) {
-            $stmt = $this->pdo->prepare("SELECT * FROM stock_items WHERE id = ?");
+            $query = "SELECT stock_items.*, categories.name AS category_name, suppliers.name AS supplier_name FROM stock_items 
+            LEFT JOIN categories ON stock_items.category_id = categories.id 
+            LEFT JOIN suppliers ON stock_items.supplier_id = suppliers.id
+            WHERE stock_items.id = ?";
+            $stmt = $this->pdo->prepare($query);
             $stmt->execute([$id]);
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
