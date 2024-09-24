@@ -18,7 +18,7 @@ class Alert {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function addAlert($data, $alert_type, $message, $created_at) {
+    public function addAlert($data) {
         $stmt = $this->pdo->prepare("INSERT INTO alerts (user_id,stock_item_id, alert_type, message) 
                                     VALUES (?, ?, ?, ?)");
         if($stmt->execute([$data['user_id'],$data['stock_item_id'], $data['alert_type'], $data['message']])){
