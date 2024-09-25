@@ -51,7 +51,7 @@ class StockItem
     {
 
         $stmt = $this->pdo->prepare("SELECT * FROM stock_items WHERE name = ?  AND id != ?");
-        $stmt->execute([$data['name']]);
+        $stmt->execute([$data['name'],$id]);
         if ($stmt->fetch()) {
             return ['error' => 'Item already exists.'];
         }
