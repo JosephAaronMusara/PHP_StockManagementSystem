@@ -69,15 +69,6 @@
           </table>
         </section>
 
-        <!-- Profit & Loss -->
-        <section id="profit-loss" class="section">
-          <h2>Profit & Loss</h2>
-          <p>
-            Still thinking if this must be available to a regular user<br />Or
-            for admin analytics.
-          </p>
-        </section>
-
         <!-- Purchase Orders -->
         <section id="purchase-orders" class="section">
           <h2>Purchase Orders</h2>
@@ -224,53 +215,77 @@
         <h2 id="modalTitle">Add New Stock</h2>
         <form id="stockForm">
           <input type="hidden" id="stockId" />
-          <input
-            type="text"
-            id="itemName"
-            name="name"
-            placeholder="Item Name"
-            required
-          />
-          <select
-            name="category_id"
-            id="category"
-            style="padding: 5px; width: calc(100% - 20px)"
-          >
+          <input type="text" id="itemName" name="name" placeholder="Item Name" required/>
+          <select name="category_id" id="category" style="padding: 5px; width: calc(100% - 20px)">
             <option value="1">EHE</option>
             <option value="2">hezvo</option>
             <option value="3">zvakadaro</option>
           </select>
-          <input
-            type="number"
-            name="quantity"
-            id="quantity"
-            placeholder="Quantity"
-            required
-          />
-          <input
-            type="number"
-            name="purchase_price"
-            id="purchasePrice"
-            placeholder="Purchase Price"
-            required
-          />
-          <input
-            type="number"
-            name="selling_price"
-            id="sellingPrice"
-            placeholder="Selling Price"
-            required
-          />
-          <input
-            type="text"
-            id="supplier"
-            name="supplier_id"
-            placeholder="Supplier"
-            required
-          />
-          <button id="submitBtn" type="submit" class="button">
-            Save Stock
-          </button>
+          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
+          <input type="number" name="purchase_price" id="purchasePrice" placeholder="Purchase Price" required/>
+          <input type="number" name="selling_price" id="sellingPrice" placeholder="Selling Price" required/>
+          <input type="text" id="supplier" name="supplier_id" placeholder="Supplier" required/>
+          <button id="submitBtn" type="submit" class="button">Save Stock</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="porderModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="modalTitle">Add New Purchase</h2>
+        <form id="porderForm">
+          <input type="hidden" id="porderId" />
+          <input type="hidden" id="userId" />
+          <select name="supplier" id="supplier" style="padding: 5px; width: calc(100% - 20px)">
+            <option value="1">EHE</option>
+            <option value="2">hezvo</option>
+            <option value="3">zvakadaro</option>
+          </select>
+          <select name="itemName" id="itemName" style="padding: 5px; width: calc(100% - 20px)">
+            <option value="1">EHE</option>
+            <option value="2">hezvo</option>
+            <option value="3">zvakadaro</option>
+          </select>           
+          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
+          <input type="number" name="unit_price" id="unitPrice" placeholder="Unit Price" required/>
+          <input type="number" name="total_amount" id="totalAmount" placeholder="Total Amount" required/>
+          <input type="text" id="time_received" name="time_received" placeholder="Time Received" required/>
+          <button id="submitBtn" type="submit" class="button">Save Purchase Order</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="salesModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="modalTitle">Add New Sale</h2>
+        <form id="salesForm">
+          <input type="hidden" id="salesId" />
+          <input type="hidden" id="userId" />
+          <select name="itemName" id="itemName" style="padding: 5px; width: calc(100% - 20px)">
+            <option value="1">EHE</option>
+            <option value="2">hezvo</option>
+            <option value="3">zvakadaro</option>
+          </select>          
+          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
+          <input type="number" name="unit_price" id="unitPrice" placeholder="Unit Price" required/>
+          <input type="number" name="total_amount" id="totalAmount" placeholder="Total Amount" required/>
+          <button id="submitBtn" type="submit" class="button">Save Purchase Order</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="suppilerModal" class="modal" style="display: none">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="modalTitle">Add New Supplier</h2>
+        <form id="supplierForm">
+          <input type="hidden" id="supplierId" />
+          <input type="text" id="itemName" name="name" placeholder="Item Name" required/>
+          <input type="text" name="contact_info" id="contact_info" placeholder="Contact Information" required/>
+          <input type="text" name="postal_address" id="postal_address" placeholder="Postal Address" required/>
+          <button id="submitBtn" type="submit" class="button">Save Stock</button>
         </form>
       </div>
     </div>
