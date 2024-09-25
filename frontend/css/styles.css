@@ -102,7 +102,7 @@ h1, h2, h3 {
 
 .dashboard-container {
     display: flex;
-    width: 70%;
+    width: 100%;
     flex-direction: column;
     height: 100vh;
 }
@@ -111,6 +111,7 @@ h1, h2, h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-left: 230px;
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -159,19 +160,19 @@ h1, h2, h3 {
     width: 30%;
 }
 
-.stock-table {
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
 
-.stock-table th, .stock-table td {
+table th, table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
 }
 
-.stock-table th {
+table th {
     background-color: #f8f9fa;
     color: #333;
 }
@@ -214,6 +215,8 @@ h1, h2, h3 {
     max-width: 500px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
     position: relative; 
+    margin-left: 33%;
+    margin-top: 60px;
     animation: fadeIn 0.3s ease; 
 }
 
@@ -316,7 +319,6 @@ h1, h2, h3 {
     background-color: #0056b3;
 }
 
-/* Light theme styles */
 body.light-mode {
     background-color: #ffffff;
     color: #333333;
@@ -326,10 +328,9 @@ body.light-mode {
     background-color: #f0f0f0;
 }
 
-/* Dark theme styles */
 body.dark-mode {
     background-color: #333333;
-    color: #ffffff;
+    color: #333333;
 }
 
 .dashboard-header.dark-mode {
@@ -359,7 +360,7 @@ body.dark-mode {
 }
 
 .dashboard-content {
-    /* margin-left: 260px; */
+    margin-left: 240px;
     padding: 20px;
 }
 
