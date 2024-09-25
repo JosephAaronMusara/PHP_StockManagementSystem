@@ -81,6 +81,7 @@ switch ($method) {
         $response['action'] = 'Add Stock Item';
         $response['received'] = $requestBody;
         $createResponse = $stockItem->addItem($requestBody);
+        $response['success']=true;
         $response = array_merge($response, $createResponse);
         break;
 
@@ -93,6 +94,7 @@ switch ($method) {
         $response['action'] = 'Update Stock';
         $response['received'] = array_merge(['id' => $id], $requestBody);
         $updateResponse = $stockItem->updateItem($id, $requestBody);
+        $response['success']=true;
         $response = array_merge($response, $updateResponse);
         break;
 
@@ -105,6 +107,7 @@ switch ($method) {
         $response['action'] = 'Delete StockItem';
         $response['received'] = ['id' => $id];
         $deleteResponse = $stockItem->deleteItem($id);
+        $response['success']=true;
         $response = array_merge($response, $deleteResponse);
         break;
 
