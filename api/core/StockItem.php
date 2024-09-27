@@ -71,4 +71,20 @@ class StockItem
         }
         return ['error' => 'Failed to delete item.'];
     }
+
+    public function getAllSuppiers()
+    {
+        $query = "SELECT id, name FROM suppliers";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllStockCategories()
+    {
+        $query = "SELECT id, name FROM categories";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

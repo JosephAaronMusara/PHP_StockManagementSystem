@@ -195,15 +195,11 @@
         <form id="stockForm">
           <input type="hidden" id="stockId" />
           <input type="text" id="itemName" name="name" placeholder="Item Name" required/>
-          <select name="category_id" id="category" style="padding: 5px; width: calc(100% - 20px)">
-            <option value="1">EHE</option>
-            <option value="2">hezvo</option>
-            <option value="3">zvakadaro</option>
-          </select>
+          <select name="category_id" id="category" style="padding: 5px; width: calc(100% - 20px)"></select>
           <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
           <input type="number" name="purchase_price" id="purchasePrice" placeholder="Purchase Price" required/>
           <input type="number" name="selling_price" id="sellingPrice" placeholder="Selling Price" required/>
-          <input type="text" id="supplier" name="supplier_id" placeholder="Supplier" required/>
+          <select name="supplier_id" id="supplier" style="padding: 5px; width: calc(100% - 20px)"></select>
           <button id="submitBtn" type="submit" class="button">Save Stock</button>
         </form>
       </div>
@@ -242,11 +238,7 @@
         <form id="salesForm">
           <input type="hidden" id="salesId" />
           <input type="hidden" name="user_id" id="userIdSale" />
-          <select name="stock_item_id" id="itemNameSale" style="padding: 5px; width: calc(100% - 20px)">
-            <option value="1">EHE</option>
-            <option value="2">hezvo</option>
-            <option value="4">zvakadaro</option>
-          </select>          
+          <select name="stock_item_id" id="itemNameSale" style="padding: 5px; width: calc(100% - 20px)"></select>          
           <input type="number" name="quantity" id="quantitySale" placeholder="Quantity" required/>
           <input type="number" name="unit_price" id="unitPriceSale" placeholder="Unit Price" readonly required/>
           <input type="number" name="total_amount" id="totalAmountSale" placeholder="Total Amount" readonly required/>

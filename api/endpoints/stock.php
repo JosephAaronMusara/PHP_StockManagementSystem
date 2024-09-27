@@ -44,7 +44,6 @@ if (in_array($method, ['POST', 'PUT'])) {
         $requestBody = $_POST;
     } elseif ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
         $requestBody = $_POST;
-        // Files can be handled from here: $_FILES
     }
 }
 
@@ -62,7 +61,16 @@ switch ($method) {
                 $response['success'] = false;
                 $response['message'] = 'Item not found.';
             }
-        } else {
+        }elseif (isset($_GET['fetch_items'])) {
+            // Fetch all suppliers from the database
+            $response['action'] = 'Get All Suppliers';
+            $response['data'] = $stockItem->getAllSuppiers();
+            $response['success'] = true;
+            $response['action1'] = 'Get All Categories';
+            $response['data1'] = $stockItem->getAllStockCategories();
+            $response['success1'] = true;
+            
+        }else {
             $response['action'] = 'Get All Stock Items';
             $response['received'] = [];
             $response['data'] = $stockItem->getAllStockItems();

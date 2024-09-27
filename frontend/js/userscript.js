@@ -14,10 +14,37 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isConfirmed) {
       localStorage.removeItem("loggedInUsername");
       localStorage.removeItem("loggedInUserId");
-      // window.location.href = "../authentication/login.html";
       window.location.href = "../../api/core/logout.php"
     }
   });
+
+  fetch('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const itemDropdown = document.getElementById('supplier');
+                itemDropdown.innerHTML = '';
+                const categoryDropdown = document.getElementById('category');
+                categoryDropdown.innerHTML = '';
+
+                data.data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    itemDropdown.appendChild(option);
+                });
+                data.data1.forEach(cat => {
+                  const option = document.createElement('option');
+                  option.value = cat.id;
+                  option.textContent = cat.name;
+                  categoryDropdown.appendChild(option);
+              });
+            } else {
+                console.error("Error fetching items:", data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+
 
   addStockButton.addEventListener("click", function () {
     openModal("Add New Stock");

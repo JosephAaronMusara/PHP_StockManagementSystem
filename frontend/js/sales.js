@@ -4,7 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeModalButton = document.querySelector(".close-button");
     const salesForm = document.getElementById("salesForm");
     const itemNameSale = document.getElementById("itemNameSale");
+    const quantitySale = document.getElementById('quantitySale');
+    let unitPriceSale = document.getElementById('unitPriceSale');
 
+    quantitySale.addEventListener('change',(e)=>{
+      document.getElementById('totalAmountSale').value = unitPriceSale.value * e.target.value;
+    });
 
     const loggedInUserId =localStorage.getItem('loggedInUserId');
     document.getElementById('userIdSale').value = loggedInUserId;
@@ -100,7 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
           ? `http://localhost/StockManagementSystem/api/endpoints/sale.php?id=${saleId}`
           : "http://localhost/StockManagementSystem/api/endpoints/sale.php";
         const method = saleId ? "PUT" : "POST";
-  const id =7;
         fetch(url, {
           method: method,
           headers: {
