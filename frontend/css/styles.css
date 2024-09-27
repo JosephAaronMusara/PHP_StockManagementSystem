@@ -347,16 +347,23 @@ body.dark-mode {
     padding-top: 20px;
 }
 
-.sidenav a {
-    padding: 10px 15px;
-    text-decoration: none;
-    font-size: 18px;
-    color: white;
-    display: block;
+.sidenav a,
+.sidenav button {
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-size: 20px;
+  padding: 10px;
+  cursor: pointer;
+  display: block;
+  width: 90%;
+  text-align: left;
 }
 
-.sidenav a:hover {
-    background-color: #575757;
+.sidenav a:hover,
+.sidenav button:hover {
+    background-color: #1d06eb;
 }
 
 .dashboard-content {
