@@ -10,12 +10,14 @@ class Sale
 
     public function getAllSales()
     {
+        $user_id = $_SESSION['user_id'];
         $query = "SELECT sales.id AS sale_id, sales.total_amount, sales.created_at AS sale_date, users.username AS sold_by, stock_items.name AS item_name, sale_details.quantity, sale_details.unit_price
                     FROM stockmanagement.sales LEFT JOIN stockmanagement.sale_details ON sales.id = sale_details.sale_id
-                    LEFT JOIN stockmanagement.users ON sales.user_id = users.id LEFT JOIN stockmanagement.stock_items ON sale_details.stock_item_id = stock_items.id;";
+                    LEFT JOIN stockmanagement.users ON sales.user_id = users.id LEFT JOIN stockmanagement.stock_items ON sale_details.stock_item_id = stock_items.id
+                    WHERE sales.user_id=?;";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
+        $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

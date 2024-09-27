@@ -8,49 +8,87 @@ class User
         $this->pdo = Database::getInstance()->getConnection();
     }
 
-    public function getAllUsers()
-    {
-        $stmt = $this->pdo->query("SELECT * FROM users");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getUser($id)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function createUser($data)
-    {
-
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$data['username'], $data['email']]);
-        if ($stmt->fetch()) {
-            return ['error' => 'Username or email already exists.'];
+    public function createUser($data) {
+        if ($data['password'] !== $data['confirm_password']) {
+            return ['success' => false, 'message' => 'Passwords do not match.'];
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO users (username, email, role, pwd) VALUES (?, ?, ?, ?)");
-        if ($stmt->execute([$data['username'], $data['email'], $data['role'], password_hash($data['pwd'],PASSWORD_BCRYPT)])) {
-            return ['id' => $this->pdo->lastInsertId(), 'message' => 'User created successfully.'];
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        $sql = "INSERT INTO users (username, email, role, pwd) VALUES (:username, :email, :role, :password)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':username', $data['username']);
+        $stmt->bindParam(':email', $data['email']);
+        $stmt->bindParam(':role',$data['role']);
+        $stmt->bindParam(':password', $hashedPassword);
+        
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'User created successfully.'];
         }
-        return ['error' => 'Failed to create user.'];
+        return ['success' => false, 'message' => 'Failed to create user.'];
     }
 
-    public function updateUser($id, $data)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE (username = ? OR email = ?) AND id != ?");
-        $stmt->execute([$data['username'], $data['email'], $id]);
-        if ($stmt->fetch()) {
-            return ['error' => 'Username or email already exists.'];
-        }
+    public function loginUser($data) {
+        $sql = "SELECT * FROM users WHERE username = :username";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':username', $data['username']);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt = $this->pdo->prepare("UPDATE users SET username = ?, email = ?, pwd = ?");
-        if ($stmt->execute([$data['username'], $data['email'], password_hash($data['pwd'],PASSWORD_BCRYPT)])) {
-            return ['message' => 'User updated successfully.'];
+        if ($user && password_verify($data['password'], $user['pwd'])) {
+            //session_start();
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            return ['success' => true, 'message' => 'Login successful','role'=>$user['role'],'user_id'=>$user['id'],'username'=>$user['username']];
         }
-        return ['error' => 'Failed to update user.'];
+        return ['success' => false, 'message' => 'Invalid username or password'];
     }
+
+    public function logoutUser() {
+        session_start();
+        session_unset();
+        session_destroy();
+        return ['success' => true, 'message' => 'Logged out successfully'];
+    }
+    
+        public function updateUserDetails($id, $data) {
+            $setFields = [];
+            if (isset($data['username'])) {
+                $setFields[] = "username = :username";
+            }
+            if (isset($data['email'])) {
+                $setFields[] = "email = :email";
+            }
+            if (isset($data['password']) && $data['password'] === $data['confirm_password']) {
+                $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+                $setFields[] = "password = :password";
+            } elseif (isset($data['password']) && $data['password'] !== $data['confirm_password']) {
+                return ['success' => false, 'message' => 'Passwords do not match.'];
+            }
+    
+            if (empty($setFields)) {
+                return ['success' => false, 'message' => 'No data to update.'];
+            }
+    
+            $sql = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            if (isset($data['username'])) {
+                $stmt->bindParam(':username', $data['username']);
+            }
+            if (isset($data['email'])) {
+                $stmt->bindParam(':email', $data['email']);
+            }
+            if (isset($data['password'])) {
+                $stmt->bindParam(':password', $hashedPassword);
+            }
+            $stmt->bindParam(':id', $id);
+            
+            if ($stmt->execute()) {
+                return ['success' => true, 'message' => 'User details updated successfully.'];
+            }
+            return ['success' => false, 'message' => 'Failed to update user details.'];
+        }
+    
 
     public function deleteUser($id)
     {

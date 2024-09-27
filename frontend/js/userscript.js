@@ -5,6 +5,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const stockForm = document.getElementById("stockForm");
   const stockTableBody = document.getElementById("stockTableBody");
 
+  const loggedInUsername = localStorage.getItem('loggedInUsername');
+  document.getElementById('welcomeSpan').innerText = `LOGGED IN AS : ${loggedInUsername.toUpperCase()}`;
+  const loggedInUserId =localStorage.getItem('loggedInUserId');
+
+  document.getElementById("logout-btn").addEventListener("click", function () {
+    const isConfirmed = confirm("Are you sure you want to log out?");
+    if (isConfirmed) {
+      localStorage.removeItem("loggedInUsername");
+      localStorage.removeItem("loggedInUserId");
+      // window.location.href = "../authentication/login.html";
+      window.location.href = "../../api/core/logout.php"
+    }
+  });
+
   addStockButton.addEventListener("click", function () {
     openModal("Add New Stock");
   });

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +10,30 @@
 </head>
 
 <body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+            if (loggedInUser !== 'admin') {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+    <script>
+        async function checkSession() {
+            try {
+                const response = await fetch('http://localhost/StockManagementSystem/api/endpoints/session-check.php');
+                const result = await response.json();
+                
+                if (!result.logged_in || result.role !== 'admin') {
+                    window.location.href = 'http://localhost/StockManagementSystem/frontend/authentication/login.html';
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+                window.location.href = 'http://localhost/StockManagementSystem/frontend/authentication/login.html'; // Redirect to login on error
+            }
+        }
+        checkSession();
+    </script>
     <div class="dashboard-container">
         <header class="dashboard-header">
             <h1>Stock Management - ADMIN</h1>

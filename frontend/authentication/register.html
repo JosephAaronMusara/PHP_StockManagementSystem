@@ -18,5 +18,27 @@
             <p>Already have an account? <a href="login.html">Login</a></p>
         </form>
     </div>
+    <script>
+        document.getElementById('reg-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+    
+            const response = await fetch('http://localhost/StockManagementSystem/api/endpoints/user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+    
+            const result = await response.json();
+            if (result.success) {
+                alert('Registration successful');
+                window.location.href = 'http://localhost/StockManagementSystem/frontend/authentication/login.html';
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+    
 </body>
 </html>

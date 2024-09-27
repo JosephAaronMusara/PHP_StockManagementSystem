@@ -15,14 +15,14 @@
       <a href="#suppliers" onclick="showSection('suppliers')">Suppliers</a>
       <a href="#transactions" onclick="showSection('transactions')">Transactions</a>
       <a href="#settings" onclick="showSection('settings')">Settings</a>
+      <li><button id="logout-btn">Logout</button></li>
     </div>
 
     <div class="dashboard-container">
       <header class="dashboard-header">
         <h1>User Stock Management</h1>
         <div class="user-info">
-          <span>Welcome, [LoggedIn User]</span>
-          <a href="../../api/accounts/logout.php">Logout</a>
+          <span id="welcomeSpan"></span>
         </div>
       </header>
 
@@ -99,7 +99,6 @@
           <table class="sales-table">
             <thead>
               <tr>
-                <th>User</th>
                 <th>Item Name</th>
                 <th>Quantity</th>
                 <th>Unit Price</th>
@@ -166,31 +165,11 @@
             <h3>Update User Details</h3>
             <form id="userDetailsForm">
               <label for="userName">Name:</label>
-              <input
-                type="text"
-                id="userName"
-                name="name"
-                placeholder="Your Name"
-                required
-              />
-
+              <input type="text" id="userName" name="name" placeholder="Your Name" required />
               <label for="userEmail">Email:</label>
-              <input
-                type="email"
-                id="userEmail"
-                name="email"
-                placeholder="Your Email"
-                required
-              />
-
+              <input type="email" id="userEmail" name="email" placeholder="Your Email" required />
               <label for="userPassword">Password:</label>
-              <input
-                type="password"
-                id="userPassword"
-                name="password"
-                placeholder="New Password"
-              />
-
+              <input type="password" id="userPassword" name="password" placeholder="New Password" />
               <button type="submit" class="button">Update Details</button>
             </form>
           </div>
@@ -236,22 +215,22 @@
         <h2 id="modalTitle">Add New Purchase</h2>
         <form id="porderForm">
           <input type="hidden" id="porderId" />
-          <input type="hidden" id="userId" />
-          <select name="supplier" id="supplier" style="padding: 5px; width: calc(100% - 20px)">
+          <input type="hidden" id="userIdPO" />
+          <select name="supplier" id="supplierPO" style="padding: 5px; width: calc(100% - 20px)">
             <option value="1">EHE</option>
             <option value="2">hezvo</option>
             <option value="3">zvakadaro</option>
           </select>
-          <select name="itemName" id="itemName" style="padding: 5px; width: calc(100% - 20px)">
+          <select name="itemNamePO" id="itemNamePO" style="padding: 5px; width: calc(100% - 20px)">
             <option value="1">EHE</option>
             <option value="2">hezvo</option>
             <option value="3">zvakadaro</option>
           </select>           
-          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
-          <input type="number" name="unit_price" id="unitPrice" placeholder="Unit Price" required/>
-          <input type="number" name="total_amount" id="totalAmount" placeholder="Total Amount" required/>
+          <input type="number" name="quantityPO" id="quantityPO" placeholder="Quantity" required/>
+          <input type="number" name="unit_price" id="unitPricePO" placeholder="Unit Price" required/>
+          <input type="number" name="total_amount" id="totalAmountPO" placeholder="Total Amount" required/>
           <input type="text" id="time_received" name="time_received" placeholder="Time Received" required/>
-          <button id="submitBtn" type="submit" class="button">Save Purchase Order</button>
+          <button id="submitBtnPO" type="submit" class="button">Save Purchase Order</button>
         </form>
       </div>
     </div>
@@ -262,16 +241,16 @@
         <h2 id="modalTitle">Add New Sale</h2>
         <form id="salesForm">
           <input type="hidden" id="salesId" />
-          <input type="hidden" id="userId" />
-          <select name="itemName" id="itemName" style="padding: 5px; width: calc(100% - 20px)">
+          <input type="hidden" name="user_id" id="userIdSale" />
+          <select name="stock_item_id" id="itemNameSale" style="padding: 5px; width: calc(100% - 20px)">
             <option value="1">EHE</option>
             <option value="2">hezvo</option>
-            <option value="3">zvakadaro</option>
+            <option value="4">zvakadaro</option>
           </select>          
-          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
-          <input type="number" name="unit_price" id="unitPrice" placeholder="Unit Price" required/>
-          <input type="number" name="total_amount" id="totalAmount" placeholder="Total Amount" required/>
-          <button id="submitBtn" type="submit" class="button">Save Purchase Order</button>
+          <input type="number" name="quantity" id="quantitySale" placeholder="Quantity" required/>
+          <input type="number" name="unit_price" id="unitPriceSale" placeholder="Unit Price" required/>
+          <input type="number" name="total_amount" id="totalAmountSale" placeholder="Total Amount" required/>
+          <button id="submitBtnSale" type="submit" class="button">Record Sale</button>
         </form>
       </div>
     </div>
@@ -282,16 +261,18 @@
         <h2 id="modalTitle">Add New Supplier</h2>
         <form id="supplierForm">
           <input type="hidden" id="supplierId" />
-          <input type="text" id="itemName" name="name" placeholder="Item Name" required/>
+          <input type="text" id="itemNameSupplier" name="name" placeholder="Item Name" required/>
           <input type="text" name="contact_info" id="contact_info" placeholder="Contact Information" required/>
           <input type="text" name="postal_address" id="postal_address" placeholder="Postal Address" required/>
-          <button id="submitBtn" type="submit" class="button">Save Stock</button>
+          <button id="submitBtnSupplier" type="submit" class="button">Save Stock</button>
         </form>
       </div>
     </div>
 
     <script src="../js/userscript.js"></script>
     <script src="../js/usersettings.js"></script>
+    <script src="../js/sales.js"></script>
+
     <script>
       // sec js
       function showSection(sectionId) {
@@ -302,5 +283,20 @@
         document.getElementById(sectionId).classList.add("active");
       }
     </script>
+    <!-- <button id="logout-btn">Logout</button> -->
+
+<script>
+    document.getElementById('logout-btn').addEventListener('click', async function () {
+        const response = await fetch('http://localhost/StockManagementSystem/api/endpoints/user.php?action=logout', {
+            method: 'POST',
+        });
+        const result = await response.json();
+        if (result.success) {
+            alert('Logged out successfully');
+            window.location.href = 'http://localhost/StockManagementSystem/frontend/authentication/login.html';  // Redirect to login
+        }
+    });
+</script>
+
   </body>
 </html>

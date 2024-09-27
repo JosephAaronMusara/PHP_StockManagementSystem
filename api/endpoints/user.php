@@ -48,51 +48,46 @@ if (in_array($method, ['POST', 'PUT'])) {
 $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? 'application/json';
 
 switch ($method) {
-    case 'GET':
-        if (isset($_GET['id'])) {
-            $response['action'] = 'Get User';
-            $response['received'] = ['id' => $_GET['id']];
-            $response['data'] = $user->getUser($_GET['id']);
-            if ($response['data']) {
-                $response['success'] = true;
-            } else {
-                $response['success'] = false;
-                $response['message'] = 'User not found.';
-            }
-        } else {
-            $response['action'] = 'Get All Users';
-            $response['received'] = [];
-            $response['data'] = $user->getAllUsers();
-            $response['success'] = true;
-        }
-        break;
-
     case 'POST':
-        if (isset($_GET['graphql'])) {
-            $query = $requestBody['query'] ?? '';
-            $response['action'] = 'GraphQL Query';
+        if (isset($_GET['action']) && $_GET['action'] === 'login') {
+            // Handle login request
+            $response['action'] = 'Login User';
             $response['received'] = $requestBody;
-            $response['data'] = handleGraphQL($query);
-            break;
+            $loginResponse = $user->loginUser($requestBody);
+            $response = array_merge($response, $loginResponse);
+            if ($loginResponse['success']) {
+                if ($loginResponse['role'] === 'admin') {
+                    $response['redirect'] = 'http://localhost/StockManagementSystem/frontend/dashboard/admin.html';  // Redirect to admin dashboard
+                } else {
+                    $response['redirect'] = 'http://localhost/StockManagementSystem/frontend/dashboard/user.html';  // Redirect to user dashboard
+                }
+            }
+        } elseif (isset($_GET['action']) && $_GET['action'] === 'logout') {
+            // Handle logout request
+            $response['action'] = 'Logout User';
+            $logoutResponse = $user->logoutUser();
+            $response = array_merge($response, $logoutResponse);
+        } else {
+            // Handle registration
+            $response['action'] = 'Create User';
+            $response['received'] = $requestBody;
+            $createResponse = $user->createUser($requestBody);
+            $response = array_merge($response, $createResponse);
         }
-        $response['action'] = 'Create User';
-        $response['received'] = $requestBody;
-        $createResponse = $user->createUser($requestBody);
-        $response = array_merge($response, $createResponse);
         break;
-
     case 'PUT':
-        $id = $_GET['id'] ?? null;
-        if (!$id) {
-            $response = ['success' => false, 'message' => 'User ID required.'];
-            break;
+        if (isset($_GET['action']) && $_GET['action'] === 'update') {
+            $id = $_GET['id'] ?? null;
+            if (!$id) {
+                $response = ['success' => false, 'message' => 'User ID required.'];
+                break;
+            }
+            $response['action'] = 'Update User Details';
+            $response['received'] = array_merge(['id' => $id], $requestBody);
+            $updateResponse = $user->updateUserDetails($id, $requestBody);
+            $response = array_merge($response, $updateResponse);
         }
-        $response['action'] = 'Update User';
-        $response['received'] = array_merge(['id' => $id], $requestBody);
-        $updateResponse = $user->updateUser($id, $requestBody);
-        $response = array_merge($response, $updateResponse);
         break;
-
     case 'DELETE':
         $id = $_GET['id'] ?? null;
         if (!$id) {
@@ -109,6 +104,7 @@ switch ($method) {
         http_response_code(405);
         $response = ['success' => false, 'message' => 'Method Not Allowed'];
         break;
+       
 }
 
 if (strpos($acceptHeader, 'application/xml') !== false) {
@@ -119,7 +115,8 @@ if (strpos($acceptHeader, 'application/xml') !== false) {
     echo "<html><body><pre>" . htmlspecialchars(print_r($response, true)) . "</pre></body></html>";
 } elseif (strpos($acceptHeader, 'application/javascript') !== false) {
     header("Content-Type: application/javascript");
-    echo "const response = " . json_encode($response) . ";";
+    echo "const response = " . json_encode($response, JSON_UNESCAPED_SLASHES) . ";";
 } else {
-    echo json_encode($response);
+    header("Content-Type: application/json");
+    echo json_encode($response, JSON_UNESCAPED_SLASHES);
 }

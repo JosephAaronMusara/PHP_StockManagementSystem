@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const userEmail = document.getElementById('userEmail').value;
         const userPassword = document.getElementById('userPassword').value;
 
-        fetch('/api/updateUserDetails.php', {
+        const userId = 1; 
+        fetch(`http://localhost/StockManagementSystem/api/endpoints/user.php?action=update&id=${userId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
