@@ -3,9 +3,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const addsaleButton = document.getElementById("addSaleButton");
     const closeModalButton = document.querySelector(".close-button");
     const salesForm = document.getElementById("salesForm");
+    const itemNameSale = document.getElementById("itemNameSale");
+
 
     const loggedInUserId =localStorage.getItem('loggedInUserId');
     document.getElementById('userIdSale').value = loggedInUserId;
+
+
+    fetch('http://localhost/StockManagementSystem/api/endpoints/sale.php?fetch_items=true')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const itemDropdown = document.getElementById('itemNameSale');
+                itemDropdown.innerHTML = '';
+
+                data.data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    itemDropdown.appendChild(option);
+                });
+            } else {
+                console.error("Error fetching items:", data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
 
   
     addsaleButton.addEventListener("click", function () {
@@ -46,6 +68,27 @@ document.addEventListener("DOMContentLoaded", function () {
           .catch((error) => console.error("Error:", error));
       }
     };
+
+    // Fetch item details
+    itemNameSale.addEventListener("change", function () {
+      const itemId = itemNameSale.value;
+
+      if (itemId) {
+          fetch(`http://localhost/StockManagementSystem/api/endpoints/sale.php?item_id=${itemId}`)
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  const item = data.data;
+                  document.getElementById('unitPriceSale').value = item.selling_price;
+              } else {
+                  console.error("Error fetching item details:", data.message);
+              }
+          })
+          .catch(error => console.error("Error:", error));
+      
+      }
+  });
+
   
     document.getElementById("salesForm").addEventListener("submit", function (event) {
         event.preventDefault();
