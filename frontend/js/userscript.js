@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const stockTableBody = document.getElementById("stockTableBody");
 
   const loggedInUsername = localStorage.getItem('loggedInUsername');
-  document.getElementById('welcomeSpan').innerText = `LOGGED IN AS : ${loggedInUsername.toUpperCase()}`;
+  document.getElementById('welcomeSpan').innerText = `Hello ${loggedInUsername.toUpperCase()}`;
   const loggedInUserId =localStorage.getItem('loggedInUserId');
 
   document.getElementById("logout-btn").addEventListener("click", function () {
@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isConfirmed) {
       localStorage.removeItem("loggedInUsername");
       localStorage.removeItem("loggedInUserId");
+      localStorage.removeItem("isActive");
       window.location.href = "../../api/core/logout.php"
     }
   });
@@ -33,10 +34,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     option.textContent = item.name;
                     itemDropdown.appendChild(option);
                 });
-                data.data1.forEach(cat => {
+                data.data1.forEach(category => {
                   const option = document.createElement('option');
-                  option.value = cat.id;
-                  option.textContent = cat.name;
+                  option.value = category.id;
+                  option.textContent = category.name;
                   categoryDropdown.appendChild(option);
               });
             } else {

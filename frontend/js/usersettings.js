@@ -5,19 +5,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     userDetailsForm.addEventListener('submit', function(event) {
         event.preventDefault();
+        const userFormData = document.getElementById('userDetailsForm');
         const userName = document.getElementById('userName').value;
         const userEmail = document.getElementById('userEmail').value;
         const userPassword = document.getElementById('userPassword').value;
 
-        const userId = 1; 
+        const userId =localStorage.getItem('loggedInUserId');
         fetch(`http://localhost/StockManagementSystem/api/endpoints/user.php?action=update&id=${userId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                username: userName,
-                email: userEmail,
-                pwd: userPassword
-            })
+            body: JSON.stringify(Object.fromEntries(userFormData))
         })
         .then(response => response.json())
         .then(data => {

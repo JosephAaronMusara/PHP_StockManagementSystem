@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Management - LOGIN</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <!-- <script src="../js/refresher.js"></script> -->
 </head>
 <body>
     <div class="auth-container">
@@ -33,6 +34,7 @@
                 alert('Login successful');
                 localStorage.setItem("loggedInUsername",result.username);
                 localStorage.setItem("loggedInUserId",result.user_id);
+                localStorage.setItem("isActive",'true');
                 console.log(result.redirect);
                 window.location.href = result.redirect;
             } else {

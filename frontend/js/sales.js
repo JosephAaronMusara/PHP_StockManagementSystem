@@ -7,9 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const quantitySale = document.getElementById('quantitySale');
     let unitPriceSale = document.getElementById('unitPriceSale');
 
-    quantitySale.addEventListener('change',(e)=>{
+    quantitySale.addEventListener('keyup', (e) => {
       document.getElementById('totalAmountSale').value = unitPriceSale.value * e.target.value;
-    });
+    });  
 
     const loggedInUserId =localStorage.getItem('loggedInUserId');
     document.getElementById('userIdSale').value = loggedInUserId;

@@ -48,7 +48,7 @@ class Supplier
             return ['error' => 'Item already exists.'];
         }
         $stmt = $this->pdo->prepare("UPDATE suppliers SET name = ?, contact_info = ?, postal_address = ? WHERE id = ?");
-         if($stmt->execute([$data['name'], $data['contact_info'], $data['supplier_id'], $data['postal_address'], $id])){
+         if($stmt->execute([$data['name'], $data['contact_info'], $data['postal_address'], $id])){
             return ['message' => 'Supplier updated successfully.'];
         }
         return ['error' => 'Failed to update Supplier.'];
