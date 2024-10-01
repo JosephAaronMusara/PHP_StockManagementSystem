@@ -81,11 +81,10 @@
         <!-- Purchase Orders -->
         <section id="purchase-orders" class="section">
           <h2>Purchase Orders</h2>
-          <button id="addPOrderButton" class="button">Record New Sale</button>
+          <button id="addPOrderButton" class="button">Add New Purchase Order</button>
           <table class="porder-table">
             <thead>
               <tr>
-                <th>User</th>
                 <th>Supplier</th>
                 <th>Item Name</th>
                 <th>Quantity</th>
@@ -222,21 +221,13 @@
         <h2 id="modalTitle">Add New Purchase</h2>
         <form id="porderForm">
           <input type="hidden" id="porderId" />
-          <input type="hidden" id="userIdPO" />
-          <select name="supplier" id="supplierPO" style="padding: 5px; width: calc(100% - 20px)">
-            <option value="1">EHE</option>
-            <option value="2">hezvo</option>
-            <option value="3">zvakadaro</option>
-          </select>
-          <select name="itemNamePO" id="itemNamePO" style="padding: 5px; width: calc(100% - 20px)">
-            <option value="1">EHE</option>
-            <option value="2">hezvo</option>
-            <option value="3">zvakadaro</option>
-          </select>           
-          <input type="number" name="quantityPO" id="quantityPO" placeholder="Quantity" required/>
+          <input type="hidden" name="user_id" id="userIdPO" />
+          <select name="supplier_id" id="supplierPO" style="padding: 5px; width: calc(100% - 20px)"></select>
+          <select name="stock_item_id" id="itemNamePO" style="padding: 5px; width: calc(100% - 20px)"></select>           
+          <input type="number" name="quantity" id="quantityPO" placeholder="Quantity" required/>
           <input type="number" name="unit_price" id="unitPricePO" placeholder="Unit Price" required/>
-          <input type="number" name="total_amount" id="totalAmountPO" placeholder="Total Amount" required/>
-          <input type="text" id="time_received" name="time_received" placeholder="Time Received" required/>
+          <input type="number" name="total_amount" id="totalAmountPO" placeholder="Total Amount" readonly required/>
+          <input type="text" id="time_received" name="received_at" placeholder="Time Received" required/>
           <button id="submitBtnPO" type="submit" class="button">Save Purchase Order</button>
         </form>
       </div>
@@ -273,6 +264,7 @@
     </div>
 
     <script src="../js/userscript.js"></script>
+    <script src="../js/purchaseOrders.js"></script>
     <script src="../js/suppliers.js"></script>
     <script src="../js/usersettings.js"></script>
     <script src="../js/sales.js"></script>

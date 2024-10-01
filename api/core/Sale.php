@@ -62,7 +62,7 @@ class Sale
 
     public function getItemDetails($itemId)
     {
-        $query = "SELECT id, name, selling_price FROM stock_items WHERE id = ?";
+        $query = "SELECT id, name, selling_price, purchase_price FROM stock_items WHERE id = ?";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$itemId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);

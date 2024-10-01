@@ -10,14 +10,29 @@ class PurchaseOrder
 
     public function getAllPurchaseOrders()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM purchase_orders");
-        $stmt->execute();
+        $user_id = $_SESSION['user_id'];
+        $query = "SELECT purchase_orders.*, suppliers.name AS supplier_name, purchase_order_details.*, users.username AS ordered_by, stock_items.name AS item_name
+                  FROM stockmanagement.purchase_orders 
+                  LEFT JOIN stockmanagement.purchase_order_details ON purchase_orders.id = purchase_order_details.purchase_order_id
+                  LEFT JOIN stockmanagement.users ON purchase_orders.user_id = users.id 
+                  LEFT JOIN stockmanagement.suppliers ON purchase_orders.supplier_id = suppliers.id
+                  LEFT JOIN stockmanagement.stock_items ON purchase_order_details.stock_item_id = stock_items.id
+                  WHERE purchase_orders.user_id=?";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getPurchaseOrderById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM purchase_orders WHERE id = ?");
+        $query =  "SELECT purchase_orders.*, suppliers.name AS supplier_name, purchase_order_details.*, users.username AS ordered_by, stock_items.name AS item_name
+        FROM stockmanagement.purchase_orders 
+        LEFT JOIN stockmanagement.purchase_order_details ON purchase_orders.id = purchase_order_details.purchase_order_id
+        LEFT JOIN stockmanagement.users ON purchase_orders.user_id = users.id 
+        LEFT JOIN stockmanagement.suppliers ON purchase_orders.supplier_id = suppliers.id
+        LEFT JOIN stockmanagement.stock_items ON purchase_order_details.stock_item_id = stock_items.id
+        WHERE purchase_orders.id = ?";
+        $stmt = $this->pdo->prepare($query);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
@@ -40,7 +55,7 @@ class PurchaseOrder
 
     public function deletePurchaseOrder($id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM purchase_orders WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM purchase_order_details WHERE id = ?");
         if ($stmt->execute([$id])) {
             return ['message' => 'Item deleted successfully.'];
         }

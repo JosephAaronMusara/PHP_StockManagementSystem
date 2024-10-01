@@ -27,7 +27,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemDropdown.innerHTML = '';
                 const categoryDropdown = document.getElementById('category');
                 categoryDropdown.innerHTML = '';
+                const supOption = document.createElement('option');
+                supOption.value=null;
+                supOption.textContent = 'Select Supplier :';
+                itemDropdown.appendChild(supOption);  
 
+                const categoryOption = document.createElement('option');
+                categoryOption.value=null;
+                categoryOption.textContent = 'Select Category :';
+                categoryDropdown.appendChild(categoryOption);  
                 data.data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
