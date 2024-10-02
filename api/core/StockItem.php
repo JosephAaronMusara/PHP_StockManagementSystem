@@ -10,7 +10,7 @@ class StockItem
     //C
     public function addItem($data)
     {
-
+        $user_id = $_SESSION['user_id'];
         $stmt = $this->pdo->prepare("SELECT * FROM stock_items WHERE name = ?");
         $stmt->execute([$data['name']]);
         if ($stmt->fetch()) {
@@ -19,6 +19,11 @@ class StockItem
 
         $stmt = $this->pdo->prepare("INSERT INTO stock_items (name, category_id, supplier_id, purchase_price, selling_price, quantity) VALUES (?, ?, ?, ?, ?, ?)");
         if ($stmt->execute([$data['name'], $data['category_id'], $data['supplier_id'], $data['purchase_price'], $data['selling_price'], $data['quantity']])) {
+            $stmt = $this->pdo->prepare("INSERT INTO stock_movements (stock_item_id, movement_type, quantity, user_id) 
+            VALUES (?, ?, ?, ?)");
+                if($stmt->execute([$this->pdo->lastInsertId(), 'addition', $data['quantity'], $user_id])){
+                return ['id' => $this->pdo->lastInsertId(), 'message' => 'Stock Movement added successfully.'];
+                }
             return ['id' => $this->pdo->lastInsertId(), 'message' => 'Item added successfully.'];
         }
         return ['error' => 'Failed to add item.'];
