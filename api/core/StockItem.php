@@ -28,7 +28,6 @@ class StockItem
         }
         return ['error' => 'Failed to add item.'];
     }
-
     //R
     public function getAllStockItems()
     {
