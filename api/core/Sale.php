@@ -49,6 +49,11 @@ class Sale
                                     VALUES (?, ?, ?, ?)");
 
                 if($stmt1->execute(['sale', $data['stock_item_id'], $data['user_id'],$data['quantity']])){
+                    $stmt = $this->pdo->prepare("INSERT INTO stock_movements (stock_item_id, movement_type, quantity, user_id) 
+                    VALUES (?, ?, ?, ?)");
+                        if($stmt->execute([$data['stock_item_id'], 'removal', $data['quantity'], $data['user_id']])){
+                        return ['id' => $this->pdo->lastInsertId(), 'message' => 'Stock Movement added successfully.'];
+                        }
                     return ['id' => $this->pdo->lastInsertId(), 'message' => 'Transaction added successfully.'];
                 }
                 return ['SaleDetailsId' => $this->pdo->lastInsertId(), 'message' => 'Sale added successfully.'];
