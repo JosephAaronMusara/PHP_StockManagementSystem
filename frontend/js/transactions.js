@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    console.log('transactions file loaded')
-
     const loggedInUserId =localStorage.getItem('loggedInUserId');
 
     function loadTransactionsData() {
