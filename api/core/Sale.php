@@ -45,6 +45,12 @@ class Sale
             $stmt = $this->pdo->prepare("INSERT INTO sale_details (sale_id, stock_item_id, quantity, unit_price) 
                                          VALUES (?, ?, ?, ?)");
             if ($stmt->execute([$this->pdo->lastInsertId(), $data['stock_item_id'], $data['quantity'], $data['unit_price']])) {
+                $stmt1 = $this->pdo->prepare("INSERT INTO transactions (transaction_type, stock_item_id,user_id, quantity) 
+                                    VALUES (?, ?, ?, ?)");
+
+                if($stmt1->execute(['sale', $data['stock_item_id'], $data['user_id'],$data['quantity']])){
+                    return ['id' => $this->pdo->lastInsertId(), 'message' => 'Transaction added successfully.'];
+                }
                 return ['SaleDetailsId' => $this->pdo->lastInsertId(), 'message' => 'Sale added successfully.'];
             }
         }

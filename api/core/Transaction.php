@@ -7,8 +7,13 @@ class Transaction {
     }
 
     public function getAllTransactions() {
-        $stmt = $this->pdo->prepare("SELECT * FROM transactions");
-        $stmt->execute();
+        $user_id = $_SESSION['user_id'];
+        $query ="SELECT transactions.*, stock_items.name AS item_name, users.username AS cashier FROM transactions
+        LEFT JOIN stock_items ON transactions.stock_item_id = stock_items.id
+        LEFT JOIN users ON transactions.user_id=users.id
+        WHERE user_id=?";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
