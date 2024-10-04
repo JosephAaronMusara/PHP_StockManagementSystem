@@ -91,4 +91,22 @@ class StockItem
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getStockValue(){
+        $query = "SELECT SUM(purchase_price * quantity) AS total_stock_value FROM stock_items";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $result1 = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $query2 = "SELECT COUNT(*) AS total_transactions FROM transactions";
+        $stmt2 = $this->pdo->prepare($query2);
+        $stmt2->execute();
+        $result2 = $stmt2->fetch(PDO::FETCH_ASSOC);
+
+        return ['success' => true, 
+                'total_stock_value' => $result1['total_stock_value'], 
+                'total_transactions' => $result2['total_transactions']];
+
+    }
+
 }
