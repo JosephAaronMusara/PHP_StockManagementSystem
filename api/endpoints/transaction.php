@@ -62,10 +62,15 @@ switch ($method) {
                 $response['success'] = false;
                 $response['message'] = 'transaction not found.';
             }
-        } else {
-            $response['action'] = 'Get All transaction';
+        } elseif(isset($_GET['user_id'])){
+            $response['action'] = 'Get All transactions For A user';
             $response['received'] = [];
             $response['data'] = $transaction->getAllTransactions();
+            $response['success'] = true;
+        }else{
+            $response['action'] = 'Get All transactions Admin';
+            $response['received'] = [];
+            $response['data'] = $transaction->getAllTransactionsAdmin();
             $response['success'] = true;
         }
         break;
