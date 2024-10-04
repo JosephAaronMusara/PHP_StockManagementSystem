@@ -84,6 +84,19 @@ switch ($method) {
         $response = array_merge($response, $createResponse);
         break;
 
+    case 'PUT':
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            $response = ['success' => false, 'message' => 'Item ID required.'];
+            break;
+        }
+        $response['action'] = 'Update Stock';
+        $response['received'] = array_merge(['id' => $id], $requestBody);
+        $updateResponse = $p_order->updatePurchaseOrder($id, $requestBody);
+        $response['success']=true;
+        $response = array_merge($response, $updateResponse);
+        break;
+
     case 'DELETE':
         $id = $_GET['id'] ?? null;
         if (!$id) {

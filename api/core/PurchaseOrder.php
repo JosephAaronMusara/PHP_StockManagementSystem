@@ -58,7 +58,18 @@ class PurchaseOrder
         return ['error' => 'Failed to add record.'];
     }
 
+    public function updatePurchaseOrder($id, $data)
+    {
+        $stmt = $this->pdo->prepare("UPDATE purchase_orders SET supplier_id=?, user_id=?, total_amount=?, received_at=? WHERE id=?");
+            if ($stmt->execute([$data['supplier_id'], $data['user_id'], $data['total_amount'], $data['received_at'],$id])) {
 
+            $stmt = $this->pdo->prepare("UPDATE purchase_order_details SET purchase_order_id=?, stock_item_id=?, quantity=?, unit_price=?");
+            if ($stmt->execute([$id, $data['stock_item_id'], $data['quantity'], $data['unit_price']])) {
+            return ['PODetailsId' => $this->pdo->lastInsertId(), 'message' => 'PODetails updated successfully.'];
+            }
+            }
+        return ['error' => 'Failed to update item.'];
+    }
     public function deletePurchaseOrder($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM purchase_orders WHERE id = ?");

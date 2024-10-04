@@ -121,33 +121,33 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    window.editPO = function (id) {
-        fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            const item = data.data;
-            document.getElementById("porderId").value = item.purchase_order_id;
-            document.getElementById("userIdPO").value = item.user_id;
-            document.getElementById("supplierPO").value = item.supplier_name
-            document.getElementById("itemNamePO").value = item.item_name;
-            document.getElementById("quantityPO").value = item.quantity;
-            document.getElementById("unitPricePO").value = item.unit_price;
-            document.getElementById("totalAmountPO").value = item.total_amount;
-            document.getElementById("time_received").value = item.received_at;
+    // window.editPO = function (id) {
+    //     fetch(
+    //       `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
+    //       {
+    //         method: "GET",
+    //         headers: {
+    //           Accept: "application/json",
+    //         },
+    //       }
+    //     )
+    //       .then((response) => response.json())
+    //       .then((data) => {
+    //         const item = data.data;
+    //         document.getElementById("porderId").value = item.purchase_order_id;
+    //         document.getElementById("userIdPO").value = item.user_id;
+    //         document.getElementById("supplierPO").value = item.supplier_name
+    //         document.getElementById("itemNamePO").value = item.item_name;
+    //         document.getElementById("quantityPO").value = item.quantity;
+    //         document.getElementById("unitPricePO").value = item.unit_price;
+    //         document.getElementById("totalAmountPO").value = item.total_amount;
+    //         document.getElementById("time_received").value = item.received_at;
     
-            document.getElementById("modalTitlePO").textContent = "Edit Purchase Order";
-            document.getElementById("porderModal").style.display = "block";
-          })
-          .catch((error) => console.error("Error fetching PO:", error));
-      };
+    //         document.getElementById("modalTitlePO").textContent = "Edit Purchase Order";
+    //         document.getElementById("porderModal").style.display = "block";
+    //       })
+    //       .catch((error) => console.error("Error fetching PO:", error));
+    //   };
   
     document.getElementById("porderForm").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -203,7 +203,6 @@ document.addEventListener("DOMContentLoaded", function () {
                   <td>${purchaseOrderData.total_amount}</td>
                   <td>${purchaseOrderData.received_at}</td>
                   <td>
-                    <button class="button" onclick="editPO(${purchaseOrderData.purchase_order_id})">Edit</button>
                     <button class="button" onclick="deletePO(${purchaseOrderData.purchase_order_id})">Delete</button>
                   </td>
               `;
@@ -215,5 +214,3 @@ document.addEventListener("DOMContentLoaded", function () {
   
     loadPurchaseOrders();
   });
-  
-//work on IDs and proper deleting. reconfigure the database foreign keys
