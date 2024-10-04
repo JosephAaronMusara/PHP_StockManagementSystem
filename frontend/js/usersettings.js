@@ -5,16 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     userDetailsForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const userFormData = document.getElementById('userDetailsForm');
-        const userName = document.getElementById('userName').value;
-        const userEmail = document.getElementById('userEmail').value;
-        const userPassword = document.getElementById('userPassword').value;
+        const userFormData = new FormData(document.getElementById('userDetailsForm'));
+        const userId = localStorage.getItem('loggedInUserId');
 
-        const userId =localStorage.getItem('loggedInUserId');
         fetch(`http://localhost/StockManagementSystem/api/endpoints/user.php?action=update&id=${userId}`, {
-            method: 'POST',
+            method: 'PUT', 
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.fromEntries(userFormData))
+            body: JSON.stringify(Object.fromEntries(userFormData.entries()))
         })
         .then(response => response.json())
         .then(data => {
@@ -29,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // theme
+    // Theme
     applyThemeButton.addEventListener('click', function() {
         const selectedTheme = themeSelect.value;
         if (selectedTheme === 'light') {
@@ -39,15 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.add('dark-mode');
             document.body.classList.remove('light-mode');
         }
+        localStorage.setItem('theme', selectedTheme);
     });
 
+    // Load and apply saved theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
         themeSelect.value = savedTheme;
         applyThemeButton.click();
     }
-
-    applyThemeButton.addEventListener('click', function() {
-        localStorage.setItem('theme', themeSelect.value);
-    });
 });
