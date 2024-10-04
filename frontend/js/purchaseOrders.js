@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const porderModal = document.getElementById("porderModal");
     const submitBtnPO = document.getElementById("submitBtnPO");
-    const closeModalButton = document.querySelector(".close-button");
+    const closeModalButton = document.getElementById("pomodalClose");
     const addPOrderButton = document.getElementById("addPOrderButton");
     const porderForm = document.getElementById("porderForm");
     const itemNamePO = document.getElementById("itemNamePO");
@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.deletePO = function (id) {
       if (confirm("Are you sure you want to delete this Purchase Order?")) {
         fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?id=${id}`,
+          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
           {
             method: "DELETE",
             headers: {
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.editPO = function (id) {
         fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?id=${id}`,
+          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
           {
             method: "GET",
             headers: {
@@ -134,15 +134,16 @@ document.addEventListener("DOMContentLoaded", function () {
           .then((response) => response.json())
           .then((data) => {
             const item = data.data;
-            document.getElementById("stockId").value = item.id;
-            document.getElementById("itemName").value = item.name;
-            document.getElementById("category").value = item.category_id;
-            document.getElementById("quantity").value = item.quantity;
-            document.getElementById("purchasePrice").value = item.purchase_price;
-            document.getElementById("sellingPrice").value = item.selling_price;
-            document.getElementById("supplier").value = item.supplier_id;
+            document.getElementById("porderId").value = item.purchase_order_id;
+            document.getElementById("userIdPO").value = item.user_id;
+            document.getElementById("supplierPO").value = item.supplier_name
+            document.getElementById("itemNamePO").value = item.item_name;
+            document.getElementById("quantityPO").value = item.quantity;
+            document.getElementById("unitPricePO").value = item.unit_price;
+            document.getElementById("totalAmountPO").value = item.total_amount;
+            document.getElementById("time_received").value = item.received_at;
     
-            document.getElementById("modalTitle").textContent = "Edit Purchase Order";
+            document.getElementById("modalTitlePO").textContent = "Edit Purchase Order";
             document.getElementById("porderModal").style.display = "block";
           })
           .catch((error) => console.error("Error fetching PO:", error));
@@ -155,8 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const porderId = document.getElementById("porderId").value;
   
         const url = porderId
-          ? `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?id=${porderId}`
-          : "http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php";
+          ? `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${porderId}`
+          : `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}`;
         const method = porderId ? "PUT" : "POST";
         fetch(url, {
           method: method,
@@ -202,8 +203,8 @@ document.addEventListener("DOMContentLoaded", function () {
                   <td>${purchaseOrderData.total_amount}</td>
                   <td>${purchaseOrderData.received_at}</td>
                   <td>
-                    <button class="button" onclick="editPO(${purchaseOrderData.id})">Edit</button>
-                    <button class="button" onclick="deletePO(${purchaseOrderData.id})">Delete</button>
+                    <button class="button" onclick="editPO(${purchaseOrderData.purchase_order_id})">Edit</button>
+                    <button class="button" onclick="deletePO(${purchaseOrderData.purchase_order_id})">Delete</button>
                   </td>
               `;
               porderTableBody.appendChild(row);

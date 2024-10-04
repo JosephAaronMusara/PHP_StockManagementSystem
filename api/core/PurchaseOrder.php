@@ -61,7 +61,7 @@ class PurchaseOrder
 
     public function deletePurchaseOrder($id)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM purchase_order_details WHERE id = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM purchase_orders WHERE id = ?");
         if ($stmt->execute([$id])) {
             return ['message' => 'Item deleted successfully.'];
         }

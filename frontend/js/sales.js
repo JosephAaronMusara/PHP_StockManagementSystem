@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const salesModal = document.getElementById("salesModal");
     const addsaleButton = document.getElementById("addSaleButton");
-    const closeModalButton = document.querySelector(".close-button");
+    const closeModalButton = document.getElementById("salemodalClose");
     const salesForm = document.getElementById("salesForm");
     const itemNameSale = document.getElementById("itemNameSale");
     const quantitySale = document.getElementById('quantitySale');
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closeModalButton.addEventListener("click", closeModal);
   
     function openModal(title) {
-      document.getElementById("modalTitle").textContent = title;
+      document.getElementById("modalTitleSale").textContent = title;
       salesModal.style.display = "block";
     }
   
