@@ -70,6 +70,11 @@ switch ($method) {
             $response['data1'] = $stockItem->getAllStockCategories();
             $response['success1'] = true;
             
+        }elseif (isset($_GET['fetch_totals'])) {
+            $response['action'] = 'Get StockValue';
+            $response['data'] = $stockItem->getStockValue();
+            $response['success'] = true;
+            
         }else {
             $response['action'] = 'Get All Stock Items';
             $response['received'] = [];
