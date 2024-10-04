@@ -11,35 +11,35 @@
 
 <body>
     <div class="dashboard-container">
-        <header class="dashboard-header">
+        <header class="dashboard-header" style="margin-left:0px;">
             <h1>Stock Management - ADMIN</h1>
             <div class="user-info">
                 <span id="welcomeSpan"></span>
-                <button id="logout-btn">Logout</button>
             </div>
         </header>
 
-        <nav class="dashboard-nav">
+        <nav class="dashboard-nav" style="margin-left:0px;">
             <ul>
                 <li><a href="#overview" class="nav-link active">Overview</a></li>
                 <li><a href="#manage-stock" class="nav-link">Manage Stock</a></li>
                 <li><a href="#sales-n-purchases" class="nav-link">Sales & Purchases</a></li>
                 <li><a href="#reports" class="nav-link">Reports</a></li>
                 <li><a href="#settings" class="nav-link">Settings</a></li>
+                <li><button id="logout-btn">Logout</button></li>
             </ul>
         </nav>
 
-        <main class="dashboard-content">
+        <main class="dashboard-content" style="margin-left:0px;">
             <section class="content-section active-section" id="overview">
                 <h2>Overview</h2>
                 <div class="stats">
                     <div class="stat-item">
                         <p>Total Stock Value</p>
-                        <h3>$100,000</h3>
+                        <h3 id="totalStockValue"></h3>
                     </div>
                     <div class="stat-item">
-                        <p>Recent Transactions</p>
-                        <h3>15</h3>
+                        <p>Total Transactions</p>
+                        <h3 id="totalTransactions"></h3>
                     </div>
                     <div class="stat-item">
                         <p>Low Stock Alerts</p>
@@ -52,7 +52,7 @@
                 <h2>Manage Stock</h2>
 
                 <button id="addStockButton" class="button">Add New Stock</button>
-                <table class="stock-table">
+                <table class="stock-table" id="stock-table">
                   <thead>
                     <tr>
                       <th>Item Name</th>
@@ -75,6 +75,20 @@
 
             <section id="sales-n-purchases" class="content-section">
                 <h2>Sales & Purchases</h2>
+                <table class="transactions-table">
+                    <thead>
+                      <tr>
+                        <th>Cashier</th>
+                        <th>Type</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Transaction Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="transactionTableBody">
+                      <!-- .................... -->
+                    </tbody>
+                  </table>
             </section>
 
             <section id="reports" class="content-section">
@@ -82,10 +96,37 @@
              
             </section>
 
-            <section id="settings" class="content-section">
-                <h2>Settings</h2>
-               
-            </section>
+            <!-- Settings -->
+        <section id="settings" class="content-section">
+            <h2>Settings</h2>
+  
+            <!-- User Details Form -->
+            <div class="settings-section">
+              <h3>Update User Details</h3>
+              <form id="userDetailsForm">
+                <label for="userName">Name:</label>
+                <input type="text" id="userName" name="username" placeholder="Your Name" required />
+                <label for="userEmail">Email:</label>
+                <input type="email" id="userEmail" name="email" placeholder="Your Email" required />
+                <label for="userPassword">Password:</label>
+                <input type="password" id="userPassword" name="password" placeholder="New Password" />
+                <label for="userPassword">Password:</label>
+                <input type="password" id="confirmUserPassword" name="confirm_password" placeholder="Confirm Password" />
+                <button type="submit" class="button">Update Details</button>
+              </form>
+            </div>
+  
+            <!-- Theme -->
+            <div class="settings-section">
+              <h3>Change Theme</h3>
+              <label for="themeSelect">Select Theme:</label>
+              <select id="themeSelect">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+              <button id="applyThemeButton" class="button">Apply Theme</button>
+            </div>
+          </section>
         </main>
         <div id="stockModal" class="modal" style="display: none">
             <div class="modal-content">
@@ -105,7 +146,9 @@
           </div>
     </div>
     <script src="../js/adminscript.js"></script>
-    <script src="../js/stockItems.js"></script>
+    <script src="../js/usersettings.js"></script>
+    <script src="../js/adminStock.js" type="module"></script>
+    <script src="../js/transactionsAdmin.js"></script>
 
 </body>
 
