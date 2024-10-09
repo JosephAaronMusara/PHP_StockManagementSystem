@@ -121,33 +121,78 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    // window.editPO = function (id) {
-    //     fetch(
-    //       `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
-    //       {
-    //         method: "GET",
-    //         headers: {
-    //           Accept: "application/json",
-    //         },
-    //       }
-    //     )
-    //       .then((response) => response.json())
-    //       .then((data) => {
-    //         const item = data.data;
-    //         document.getElementById("porderId").value = item.purchase_order_id;
-    //         document.getElementById("userIdPO").value = item.user_id;
-    //         document.getElementById("supplierPO").value = item.supplier_name
-    //         document.getElementById("itemNamePO").value = item.item_name;
-    //         document.getElementById("quantityPO").value = item.quantity;
-    //         document.getElementById("unitPricePO").value = item.unit_price;
-    //         document.getElementById("totalAmountPO").value = item.total_amount;
-    //         document.getElementById("time_received").value = item.received_at;
+    window.acknowledgePO = function (id) {
+      fetch(
+        `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const item = data.data;
+          const received_data = {
+            "name": item.item_name,
+            "category_id": 1,
+            "supplier_id" :item.supplier_id,
+            "purchase_price" : item.unit_price,
+            "selling_price":item.unit_price,
+            "quantity" : item.quantity,
+          };
+          console.log(received_data);
+          fetch("http://localhost/StockManagementSystem/api/endpoints/stock.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(received_data),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Successful");
+            } else {
+              alert("Error saving stock item:", data.message);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+//
+        })
+        .catch((error) => console.error("Error recording Order :", error));
+    };
+
+
+    window.editPO = function (id) {
+        fetch(
+          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            const item = data.data;
+            document.getElementById("porderId").value = item.purchase_order_id;
+            document.getElementById("userIdPO").value = item.user_id;
+            document.getElementById("supplierPO").value = item.supplier_name
+            document.getElementById("itemNamePO").value = item.item_name;
+            document.getElementById("quantityPO").value = item.quantity;
+            document.getElementById("unitPricePO").value = item.unit_price;
+            document.getElementById("totalAmountPO").value = item.total_amount;
+            document.getElementById("time_received").value = item.received_at;
     
-    //         document.getElementById("modalTitlePO").textContent = "Edit Purchase Order";
-    //         document.getElementById("porderModal").style.display = "block";
-    //       })
-    //       .catch((error) => console.error("Error fetching PO:", error));
-    //   };
+            document.getElementById("modalTitlePO").textContent = "Edit Purchase Order";
+            document.getElementById("porderModal").style.display = "block";
+          })
+          .catch((error) => console.error("Error fetching PO:", error));
+      };
   
     document.getElementById("porderForm").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -203,7 +248,9 @@ document.addEventListener("DOMContentLoaded", function () {
                   <td>${purchaseOrderData.total_amount}</td>
                   <td>${purchaseOrderData.received_at}</td>
                   <td>
+                    <button class="button" onclick="editPO(${purchaseOrderData.purchase_order_id})">Edit</button>
                     <button class="button" onclick="deletePO(${purchaseOrderData.purchase_order_id})">Delete</button>
+                    <button class="button" onclick="acknowledgePO(${purchaseOrderData.purchase_order_id})">Received</button>
                   </td>
               `;
               porderTableBody.appendChild(row);
