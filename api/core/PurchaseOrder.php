@@ -74,7 +74,7 @@ class PurchaseOrder
     {
         $stmt = $this->pdo->prepare("DELETE FROM purchase_orders WHERE id = ?");
         if ($stmt->execute([$id])) {
-            return ['message' => 'Item deleted successfully.'];
+            return ['message' => 'Item deleted successfully.','success' => true];
         }
         return ['error' => 'Failed to delete item.'];
     }
