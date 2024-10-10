@@ -74,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log(data.data)
                     const item = data.data;
                     document.getElementById('unitPricePO').value = item.purchase_price;
                 } else {
@@ -135,6 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           const item = data.data;
           const received_data = {
+            "stock_item_id" : item.stock_item_id,
+            "user_id": loggedInUserId,
             "name": item.item_name,
             "category_id": 1,
             "supplier_id" :item.supplier_id,
@@ -142,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "selling_price":item.unit_price,
             "quantity" : item.quantity,
           };
-          console.log(received_data);
           fetch("http://localhost/StockManagementSystem/api/endpoints/stock.php", {
           method: "POST",
           headers: {
@@ -181,8 +181,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const item = data.data;
             document.getElementById("porderId").value = item.purchase_order_id;
             document.getElementById("userIdPO").value = item.user_id;
-            document.getElementById("supplierPO").value = item.supplier_name
-            document.getElementById("itemNamePO").value = item.item_name;
+            document.getElementById("supplierPO").value = item.supplier_id
+            document.getElementById("itemNamePO").value = item.stock_item_id;
             document.getElementById("quantityPO").value = item.quantity;
             document.getElementById("unitPricePO").value = item.unit_price;
             document.getElementById("totalAmountPO").value = item.total_amount;
