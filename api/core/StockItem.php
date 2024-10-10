@@ -14,7 +14,17 @@ class StockItem
         $stmt = $this->pdo->prepare("SELECT * FROM stock_items WHERE name = ?");
         $stmt->execute([$data['name']]);
         if ($stmt->fetch()) {
-            return ['error' => 'Item already exists.'];
+            $stmt = $this->pdo->prepare("UPDATE stock_items SET supplier_id = ?, quantity = quantity + ? WHERE name = ?");
+            if ($stmt->execute([$data['supplier_id'], $data['quantity'], $data['name']])) {
+                $stmt1 = $this->pdo->prepare("INSERT INTO transactions (transaction_type, stock_item_id,user_id, quantity) 
+                VALUES (?, ?, ?, ?)");
+
+                if($stmt1->execute(['purchase', $data['stock_item_id'], $data['user_id'],$data['quantity']])){
+                return ['id' => $this->pdo->lastInsertId(), 'message' => 'Transaction added successfully.'];
+                }
+                return ['success' => true, 'message' => 'Stock quantity updated successfully.'];
+            }
+            return ['error' => 'Failed to update stock quantity.'];
         }
 
         $stmt = $this->pdo->prepare("INSERT INTO stock_items (name, category_id, supplier_id, purchase_price, selling_price, quantity) VALUES (?, ?, ?, ?, ?, ?)");
