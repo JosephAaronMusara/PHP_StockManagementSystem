@@ -6,30 +6,32 @@ document.addEventListener("DOMContentLoaded", function () {
     const itemNameSale = document.getElementById("itemNameSale");
     const quantitySale = document.getElementById('quantitySale');
     let unitPriceSale = document.getElementById('unitPriceSale');
+    let salesModalCustomerId = document.getElementById("salesModalCustomerId");
 
     quantitySale.addEventListener('keyup', (e) => {
       document.getElementById('totalAmountSale').value = unitPriceSale.value * e.target.value;
-    });  
-
+    });
+    unitPriceSale.addEventListener('keyup', (e) => {
+      document.getElementById('totalAmountSale').value = quantitySale.value * e.target.value;
+    });
     const loggedInUserId =localStorage.getItem('loggedInUserId');
     document.getElementById('userIdSale').value = loggedInUserId;
 
 
-    fetch('http://localhost/StockManagementSystem/api/endpoints/sale.php?fetch_items=true')
-        .then(response => response.json())
+    axios.get('http://localhost/StockManagementSystem/api/endpoints/sale.php?fetch_items=true')
         .then(data => {
-            if (data.success) {
+            if (data.data.success) {
                 const itemDropdown = document.getElementById('itemNameSale');
                 itemDropdown.innerHTML = '';
 
-                data.data.forEach(item => {
+                data.data.data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = item.name;
                     itemDropdown.appendChild(option);
                 });
             } else {
-                console.error("Error fetching items:", data.message);
+                console.error("Error fetching items:", data.data.message);
             }
         })
         .catch(error => console.error("Error:", error));
@@ -63,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
         )
           .then((response) => response.json())
           .then((data) => {
-              console.log(data['message']);
             if (data.success) {
               loadSalesData();
             } else {
@@ -74,19 +75,37 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
+    function checkChange(){
+      const custSelCheck = document.getElementById("custSelCheck");
+
+      if(custSelCheck.checked==true){
+        salesModalCustomerId.style.display='none';
+        salesModalCustomerId.value= null;
+      }else{
+        salesModalCustomerId.style.display='block';
+      }
+    }
+
+    custSelCheck.addEventListener("change",()=>{
+      checkChange();
+    });
+
+    //AXIOS----------
+    //status field
+    
+
     // Fetch item details
     itemNameSale.addEventListener("change", function () {
       const itemId = itemNameSale.value;
 
       if (itemId) {
-          fetch(`http://localhost/StockManagementSystem/api/endpoints/sale.php?item_id=${itemId}`)
-          .then(response => response.json())
+          axios.get(`http://localhost/StockManagementSystem/api/endpoints/sale.php?item_id=${itemId}`)
           .then(data => {
-              if (data.success) {
-                  const item = data.data;
+              if (data.data.success) {
+                  const item = data.data.data;
                   document.getElementById('unitPriceSale').value = item.selling_price;
               } else {
-                  console.error("Error fetching item details:", data.message);
+                  console.error("Error fetching item details:", data.data.message);
               }
           })
           .catch(error => console.error("Error:", error));
@@ -94,6 +113,23 @@ document.addEventListener("DOMContentLoaded", function () {
       }
   });
 
+    fetch('http://localhost/StockManagementSystem/api/endpoints/sale.php?customer=true')
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            salesModalCustomerId.innerHTML = '';
+
+            data.data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.id;
+                option.textContent = item.name;
+                salesModalCustomerId.appendChild(option);
+            });
+        } else {
+            console.error("Error fetching items:", data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
   
     document.getElementById("salesForm").addEventListener("submit", function (event) {
         event.preventDefault();
@@ -119,7 +155,9 @@ document.addEventListener("DOMContentLoaded", function () {
               document.getElementById("salesModal").style.display = "none";
               loadSalesData();
             } else {
-              console.error("Error saving sale data:", data.message);
+              if(data['error']){
+                alert(data['error'])
+              }
               document.getElementById("salesModal").style.display = "none";
               loadSalesData();
             }
@@ -128,24 +166,19 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   
     function loadSalesData() {
-      fetch(`http://localhost/StockManagementSystem/api/endpoints/sale.php?user_id=${loggedInUserId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      axios.get(`http://localhost/StockManagementSystem/api/endpoints/sale.php?user_id=${loggedInUserId}`)
         .then((data) => {
           const salesTableBody = document.getElementById("salesTableBody");
           salesTableBody.innerHTML = "";
   
-          data.data.forEach((sale) => {
+          data.data.data.forEach((sale) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${sale.item_name}</td>
                   <td>${sale.quantity}</td>
                   <td>${sale.unit_price}</td>
                   <td>${sale.total_amount}</td>
+                  <td>${sale.customer_name==null?'Not Recorded':sale.customer_name}</td>
                   <td>${sale.sale_date}</td>
                   <td>
                       <button class="button" onclick="deleteSale(${sale.sale_id})">Delete</button>
