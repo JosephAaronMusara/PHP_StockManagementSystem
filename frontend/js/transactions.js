@@ -3,18 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const loggedInUserId =localStorage.getItem('loggedInUserId');
 
     function loadTransactionsData() {
-      fetch(`http://localhost/StockManagementSystem/api/endpoints/transaction.php?user_id=${loggedInUserId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      axios.get(`http://localhost/StockManagementSystem/api/endpoints/transaction.php?user_id=${loggedInUserId}`)
         .then((data) => {
           const transactionTableBody = document.getElementById("transactionTableBody");
           transactionTableBody.innerHTML = "";
   
-          data.data.forEach((sale) => {
+          data.data.data.forEach((sale) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${sale.transaction_type}</td>
