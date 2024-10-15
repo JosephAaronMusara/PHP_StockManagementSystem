@@ -53,18 +53,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   
     window.editSupplier = function (id) {
-      fetch(
-        `http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${id}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-        .then((response) => response.json())
+        axios.get(`http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${id}`)
         .then((data) => {
-          const item = data.data;
+          const item = data.data.data;
           document.getElementById("supplierId").value = item.id;
           document.getElementById("itemNameSupplier").value = item.name;
           document.getElementById("contact_info").value = item.contact_info;
@@ -110,18 +101,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   
     function loadSuppliers() {
-      fetch("http://localhost/StockManagementSystem/api/endpoints/supplier.php", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      axios.get("http://localhost/StockManagementSystem/api/endpoints/supplier.php")
         .then((data) => {
           const supplierTableBody = document.getElementById("supplierTableBody");
           supplierTableBody.innerHTML = "";
   
-          data.data.forEach((item) => {
+          data.data.data.forEach((item) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${item.name}</td>
