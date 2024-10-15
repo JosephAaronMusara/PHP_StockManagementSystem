@@ -1,18 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     function loadTransactionsData() {
-      fetch(`http://localhost/StockManagementSystem/api/endpoints/transaction.php`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      axios.get(`http://localhost/StockManagementSystem/api/endpoints/transaction.php`)
         .then((data) => {
           const transactionTableBody = document.getElementById("transactionTableBody");
           transactionTableBody.innerHTML = "";
   
-          data.data.forEach((sale) => {
+          data.data.data.forEach((sale) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${sale.cashier}</td>
