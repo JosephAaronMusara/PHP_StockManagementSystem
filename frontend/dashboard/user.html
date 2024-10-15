@@ -7,6 +7,7 @@
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User-Stock Management</title>
+    <link rel="shortcut icon" href="../images/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="../css/styles.css" />
   </head>
   <body>
@@ -110,6 +111,7 @@
                 <th>Quantity</th>
                 <th>Unit Price</th>
                 <th>Total Amount</th>
+                <th>Customer Name</th>
                 <th>Time of Sale</th>
                 <th>Actions</th>
               </tr>
@@ -204,9 +206,9 @@
           <input type="hidden" id="stockId" />
           <input type="text" id="itemName" name="name" placeholder="Item Name" required/>
           <select name="category_id" id="category" style="padding: 5px; width: calc(100% - 20px)"></select>
-          <input type="number" name="quantity" id="quantity" placeholder="Quantity" required/>
-          <input type="number" name="purchase_price" id="purchasePrice" placeholder="Purchase Price" required/>
-          <input type="number" name="selling_price" id="sellingPrice" placeholder="Selling Price" required/>
+          <input type="number" name="quantity" id="quantity" placeholder="Quantity" min="0" required/>
+          <input type="number" name="purchase_price" id="purchasePrice" placeholder="Purchase Price" min="1" required/>
+          <input type="number" name="selling_price" id="sellingPrice" placeholder="Selling Price" min="1" required/>
           <select name="supplier_id" id="supplier" style="padding: 5px; width: calc(100% - 20px)"></select>
           <button id="submitBtn" type="submit" class="button">Save Stock</button>
         </form>
@@ -222,10 +224,10 @@
           <input type="hidden" name="user_id" id="userIdPO" />
           <select name="supplier_id" id="supplierPO" style="padding: 5px; width: calc(100% - 20px)"></select>
           <select name="stock_item_id" id="itemNamePO" style="padding: 5px; width: calc(100% - 20px)"></select>           
-          <input type="number" name="quantity" id="quantityPO" placeholder="Quantity" required/>
-          <input type="number" name="unit_price" id="unitPricePO" placeholder="Unit Price" required/>
+          <input type="number" name="quantity" id="quantityPO" placeholder="Quantity" min="0" required/>
+          <input type="number" name="unit_price" id="unitPricePO" placeholder="Unit Price" min="0" required/>
           <input type="number" name="total_amount" id="totalAmountPO" placeholder="Total Amount" readonly required/>
-          <input type="text" id="time_received" name="received_at" placeholder="Time Received" required/>
+          <input type="datetime-local" id="time_received" name="received_at"  required/>
           <button id="submitBtnPO" type="submit" class="button">Save Purchase Order</button>
         </form>
       </div>
@@ -239,9 +241,11 @@
           <input type="hidden" id="salesId" />
           <input type="hidden" name="user_id" id="userIdSale" />
           <select name="stock_item_id" id="itemNameSale" style="padding: 5px; width: calc(100% - 20px)"></select>          
-          <input type="number" name="quantity" id="quantitySale" placeholder="Quantity" required/>
-          <input type="number" name="unit_price" id="unitPriceSale" placeholder="Unit Price" readonly required/>
+          <input type="number" name="quantity" id="quantitySale" placeholder="Quantity" min="0" required/>
+          <input type="number" name="unit_price" id="unitPriceSale" placeholder="Unit Price" min="0"  required/>
           <input type="number" name="total_amount" id="totalAmountSale" placeholder="Total Amount" readonly required/>
+          <input type="checkbox" name="custSel" id="custSelCheck"> <span>Dont specify customer</span>
+          <select name="customer_id" id="salesModalCustomerId" style="padding: 5px; width: calc(100% - 20px)"></select>
           <button id="submitBtnSale" type="submit" class="button">Record Sale</button>
         </form>
       </div>
@@ -267,9 +271,9 @@
     <script src="../js/transactions.js"></script>
     <script src="../js/usersettings.js"></script>
     <script src="../js/sales.js"></script>
+    <script src="../js/axios.min.js"></script>
 
     <script>
-      // sec js
       function showSection(sectionId) {
         const sections = document.querySelectorAll(".section");
         sections.forEach((section) => {
