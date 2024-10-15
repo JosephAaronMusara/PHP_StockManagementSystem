@@ -121,18 +121,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.acknowledgePO = function (id) {
-      fetch(
-        `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      )
-        .then((response) => response.json())
+          axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
         .then((data) => {
-          const item = data.data;
+          const item = data.data.data;
           const received_data = {
             "stock_item_id" : item.stock_item_id,
             "user_id": loggedInUserId,
@@ -167,16 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     window.editPO = function (id) {
-        fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
-          .then((response) => response.json())
+          axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
           .then((data) => {
             const item = data.data;
             document.getElementById("porderId").value = item.purchase_order_id;
@@ -227,18 +209,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   
     function loadPurchaseOrders() {
-      fetch(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
+      axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}`)
         .then((data) => {
           const porderTableBody = document.getElementById("porderTableBody");
           porderTableBody.innerHTML = "";
   
-          data.data.forEach((purchaseOrderData) => {
+          data.data.data.forEach((purchaseOrderData) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${purchaseOrderData.supplier_name}</td>
