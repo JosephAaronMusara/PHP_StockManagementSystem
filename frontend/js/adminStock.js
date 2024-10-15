@@ -117,18 +117,9 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.editStock = function (id) {
-    fetch(
-      `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
+      axios.get(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`)
       .then((data) => {
-        const item = data.data;
+        const item = data.data.data;
         document.getElementById("stockId").value = item.id;
         document.getElementById("itemName").value = item.name;
         document.getElementById("category").value = item.category_id;
@@ -177,17 +168,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   function loadStockItems() {
-    fetch("http://localhost/StockManagementSystem/api/endpoints/stock.php", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
+    axios.get("http://localhost/StockManagementSystem/api/endpoints/stock.php")
       .then((data) => {
         const adminStockTableBody = document.getElementById("adminStockTableBody");
         adminStockTableBody.innerHTML ="";
-        data.data.forEach((item) => {
+        data.data.data.forEach((item) => {
             const adminStockRow = document.createElement("tr");
             adminStockRow.innerHTML = `
                   <td>${item.name}</td>
