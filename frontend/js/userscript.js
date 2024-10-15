@@ -19,10 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  fetch('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
-        .then(response => response.json())
+  axios.get('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
         .then(data => {
-            if (data.success) {
+            if (data.data.success) {
                 const itemDropdown = document.getElementById('supplier');
                 itemDropdown.innerHTML = '';
                 const categoryDropdown = document.getElementById('category');
@@ -36,20 +35,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 categoryOption.value=null;
                 categoryOption.textContent = 'Select Category :';
                 categoryDropdown.appendChild(categoryOption);  
-                data.data.forEach(item => {
+                data.data.data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = item.name;
                     itemDropdown.appendChild(option);
                 });
-                data.data1.forEach(category => {
+                data.data.data1.forEach(category => {
                   const option = document.createElement('option');
                   option.value = category.id;
                   option.textContent = category.name;
                   categoryDropdown.appendChild(option);
               });
             } else {
-                console.error("Error fetching items:", data.message);
+                console.error("Error fetching items:", data.data.message);
             }
         })
         .catch(error => console.error("Error:", error));
@@ -95,18 +94,9 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   window.editStock = function (id) {
-    fetch(
-      `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
+    axios.get(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`)
       .then((data) => {
-        const item = data.data;
+        const item = data.data.data;
         document.getElementById("stockId").value = item.id;
         document.getElementById("itemName").value = item.name;
         document.getElementById("category").value = item.category_id;
@@ -155,18 +145,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   function loadStockItems() {
-    fetch("http://localhost/StockManagementSystem/api/endpoints/stock.php", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
+    axios.get("http://localhost/StockManagementSystem/api/endpoints/stock.php")
       .then((data) => {
         const stockTableBody = document.getElementById("stockTableBody");
         stockTableBody.innerHTML = "";
 
-        data.data.forEach((item) => {
+        data.data.data.forEach((item) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                 <td>${item.name}</td>
