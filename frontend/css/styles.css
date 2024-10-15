@@ -237,6 +237,7 @@ table th {
 
 .modal-content form input[type="text"],
 .modal-content form input[type="number"],
+.modal-content form input[type="datetime-local"],
 .modal-content form select,
 .modal-content form button {
     width: calc(100% - 20px);
