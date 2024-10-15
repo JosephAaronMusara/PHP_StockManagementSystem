@@ -66,6 +66,13 @@ switch ($method) {
             $response['data'] = $sale->getItemDetails($_GET['item_id']);
             $response['success'] = $response['data'] ? true : false;
             $response['message'] = $response['data'] ? '' : 'Item not found.';
+        }
+        elseif (isset($_GET['customer'])) {
+            $response['action'] = 'Get customer';
+            $response['received'] = ['customer' => true];
+            $response['data'] = $sale->getCustomers();
+            $response['success'] = $response['data'] ? true : false;
+            $response['message'] = $response['data'] ? '' : 'customer not found.';
         }elseif (isset($_GET['fetch_items'])) {
             // Fetch all stock items from the database
             $response['action'] = 'Get All Stock Items';
@@ -104,6 +111,7 @@ switch ($method) {
         $response['received'] = ['id' => $id];
         $deleteResponse = $sale->deleteSale($id);
         $response = array_merge($response, $deleteResponse);
+        $response['success'] = true; 
         break;
 
     default:
