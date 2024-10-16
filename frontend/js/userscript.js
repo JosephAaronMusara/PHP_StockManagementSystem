@@ -120,7 +120,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const url = stockId
         ? `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${stockId}`
         : "http://localhost/StockManagementSystem/api/endpoints/stock.php";
-      const method = stockId ? "PUT" : "POST";
 
       const data = Object.fromEntries(formData);
 
