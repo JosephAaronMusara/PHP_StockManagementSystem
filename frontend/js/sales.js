@@ -54,21 +54,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     window.deleteSale = function (id) {
       if (confirm("Are you sure you want to delete this sale item?")) {
-        fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/sale.php?id=${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
-          .then((response) => response.json())
+        axios.delete(`http://localhost/StockManagementSystem/api/endpoints/sale.php?id=${id}`)
           .then((data) => {
-            if (data.success) {
+            if (data.data.success) {
               loadSalesData();
             } else {
-              console.error("Error deleting sale item:", data.message);
+              console.error("Error deleting sale item:", data.data.message);
             }
           })
           .catch((error) => console.error("Error:", error));
@@ -113,20 +104,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
   });
 
-    fetch('http://localhost/StockManagementSystem/api/endpoints/sale.php?customer=true')
-    .then(response => response.json())
+    axios.get('http://localhost/StockManagementSystem/api/endpoints/sale.php?customer=true')
     .then(data => {
-        if (data.success) {
+        if (data.data.success) {
             salesModalCustomerId.innerHTML = '';
 
-            data.data.forEach(item => {
+            data.data.data.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.id;
                 option.textContent = item.name;
                 salesModalCustomerId.appendChild(option);
             });
         } else {
-            console.error("Error fetching items:", data.message);
+            console.error("Error fetching items:", data.data.message);
         }
     })
     .catch(error => console.error("Error:", error));
