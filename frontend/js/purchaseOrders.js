@@ -19,10 +19,9 @@ document.addEventListener("DOMContentLoaded", function () {
         openModal("Add New Purchase Order");
       });
 
-    fetch('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
+    axios.get('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
+    .then(response => {
+        if (response.data.success) {
             const itemDropdown = document.getElementById('supplierPO');
             itemDropdown.innerHTML = '';
             const supOption = document.createElement('option');
@@ -30,22 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
             supOption.textContent = 'Select Supplier :';
             itemDropdown.appendChild(supOption);  
  
-            data.data.forEach(item => {
+            response.data.data.forEach(item => {
                 const option = document.createElement('option');
                 option.value = item.id;
                 option.textContent = item.name;
                 itemDropdown.appendChild(option);
             });
         } else {
-            console.error("Error fetching items:", data.message);
+            console.error("Error fetching items:", response.data.message);
         }
     })
     .catch(error => console.error("Error:", error));
 
-    fetch('http://localhost/StockManagementSystem/api/endpoints/sale.php?fetch_items=true')
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+    axios.get('http://localhost/StockManagementSystem/api/endpoints/sale.php?fetch_items=true')
+        .then(response => {
+            if (response.data.success) {
                 const itemnameDropdown = document.getElementById('itemNamePO');
                 itemnameDropdown.innerHTML = '';
                 const itemOption = document.createElement('option');
@@ -53,14 +51,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 itemOption.textContent = 'Select Item Name :';
                 itemnameDropdown.appendChild(itemOption); 
 
-                data.data.forEach(item => {
+                response.data.data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = item.name;
                     itemnameDropdown.appendChild(option);
                 });
             } else {
-                console.error("Error fetching items:", data.message);
+                console.error("Error fetching items:", response.data.message);
             }
         })
         .catch(error => console.error("Error:", error));
@@ -70,14 +68,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const itemId = itemNamePO.value;
   
         if (itemId) {
-            fetch(`http://localhost/StockManagementSystem/api/endpoints/sale.php?item_id=${itemId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const item = data.data;
+            axios.get(`http://localhost/StockManagementSystem/api/endpoints/sale.php?item_id=${itemId}`)
+            .then(response => {
+                if (response.data.success) {
+                    const item = response.data.data;
                     document.getElementById('unitPricePO').value = item.purchase_price;
                 } else {
-                    console.error("Error fetching item details:", data.message);
+                    console.error("Error fetching item details:", response.data.message);
                 }
             })
             .catch(error => console.error("Error:", error));
@@ -98,22 +95,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     window.deletePO = function (id) {
       if (confirm("Are you sure you want to delete this Purchase Order?")) {
-        fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-              console.log(data['message']);
-            if (data.success) {
+        axios.delete(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
+          .then((response) => {
+            if (response.data.success) {
               loadPurchaseOrders();
             } else {
-              console.error("Error deleting Purchase Order :", data.message);
+              console.error("Error deleting Purchase Order :", response.data.message);
             }
           })
           .catch((error) => console.error("Error:", error));
@@ -121,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     window.acknowledgePO = function (id) {
-          axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
+        axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
         .then((data) => {
           const item = data.data.data;
           const received_data = {
@@ -134,20 +121,17 @@ document.addEventListener("DOMContentLoaded", function () {
             "selling_price":item.unit_price,
             "quantity" : item.quantity,
           };
-          fetch("http://localhost/StockManagementSystem/api/endpoints/stock.php", {
-          method: "POST",
+
+          axios.post("http://localhost/StockManagementSystem/api/endpoints/stock.php", received_data,{
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-          },
-          body: JSON.stringify(received_data),
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
+          },})
+          .then((response) => {
+            if (response.data.success) {
               alert("Successful");
             } else {
-              alert("Error saving stock item:", data.message);
+              alert("Error saving stock item:", response.data.message);
             }
           })
           .catch((error) => console.error("Error:", error));
@@ -159,8 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.editPO = function (id) {
           axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${id}`)
-          .then((data) => {
-            const item = data.data;
+          .then((response) => {
+            const item = response.data.data;
             document.getElementById("porderId").value = item.purchase_order_id;
             document.getElementById("userIdPO").value = item.user_id;
             document.getElementById("supplierPO").value = item.supplier_id
@@ -185,23 +169,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = porderId
           ? `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}&id=${porderId}`
           : `http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}`;
-        const method = porderId ? "PUT" : "POST";
-        fetch(url, {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
+
+        const data = Object.fromEntries(formData);
+      
+        const request = porderId 
+          ? axios.put(url, data, {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            })
+          : axios.post(url, data, {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            });
+      
+        request
+          .then((response) => {
+            if (response.data.success) {
               document.getElementById("porderModal").style.display = "none";
               loadPurchaseOrders();
             } else {
-              console.error("Error saving purchase Order data:", data.message);
-              document.getElementById("porderModal").style.display = "none";
+              alert("Error saving purchase Order data:", response.data.message);
               loadPurchaseOrders();
             }
           })
@@ -210,11 +201,11 @@ document.addEventListener("DOMContentLoaded", function () {
   
     function loadPurchaseOrders() {
       axios.get(`http://localhost/StockManagementSystem/api/endpoints/purchaseOrder.php?user_id=${loggedInUserId}`)
-        .then((data) => {
+        .then((response) => {
           const porderTableBody = document.getElementById("porderTableBody");
           porderTableBody.innerHTML = "";
   
-          data.data.data.forEach((purchaseOrderData) => {
+          response.data.data.forEach((purchaseOrderData) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${purchaseOrderData.supplier_name}</td>
