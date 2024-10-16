@@ -122,38 +122,47 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Error:", error));
   
     document.getElementById("salesForm").addEventListener("submit", function (event) {
-        event.preventDefault();
-  
-        const formData = new FormData(this);
-        const saleId = document.getElementById("salesId").value;
-  
-        const url = saleId
-          ? `http://localhost/StockManagementSystem/api/endpoints/sale.php?id=${saleId}`
-          : "http://localhost/StockManagementSystem/api/endpoints/sale.php";
-        const method = saleId ? "PUT" : "POST";
-        fetch(url, {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              document.getElementById("salesModal").style.display = "none";
-              loadSalesData();
-            } else {
-              if(data['error']){
-                alert(data['error'])
-              }
-              document.getElementById("salesModal").style.display = "none";
-              loadSalesData();
-            }
+      event.preventDefault();
+    
+      const formData = new FormData(this);
+      const saleId = document.getElementById("salesId").value;
+    
+      const url = saleId
+        ? `http://localhost/StockManagementSystem/api/endpoints/sale.php?id=${saleId}`
+        : "http://localhost/StockManagementSystem/api/endpoints/sale.php";
+    
+      const data = Object.fromEntries(formData);
+      
+      const request = saleId 
+        ? axios.put(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
           })
-          .catch((error) => console.error("Error:", error));
-      });
+        : axios.post(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+    
+      request
+        .then((response) => {
+          if (response.data.success) {
+            document.getElementById("salesModal").style.display = "none";
+            loadSalesData();
+          } else {
+            if (response.data.error) {
+              alert(response.data.error);
+            }
+            document.getElementById("salesModal").style.display = "none";
+            loadSalesData();
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+    
   
     function loadSalesData() {
       axios.get(`http://localhost/StockManagementSystem/api/endpoints/sale.php?user_id=${loggedInUserId}`)
