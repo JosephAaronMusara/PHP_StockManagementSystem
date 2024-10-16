@@ -17,7 +17,8 @@ class PurchaseOrder
                   LEFT JOIN stockmanagement.users ON purchase_orders.user_id = users.id 
                   LEFT JOIN stockmanagement.suppliers ON purchase_orders.supplier_id = suppliers.id
                   LEFT JOIN stockmanagement.stock_items ON purchase_order_details.stock_item_id = stock_items.id
-                  WHERE purchase_orders.user_id=?";
+                  WHERE purchase_orders.user_id=?
+                  ORDER BY purchase_orders.id DESC";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,8 +64,9 @@ class PurchaseOrder
         $stmt = $this->pdo->prepare("UPDATE purchase_orders SET supplier_id=?, user_id=?, total_amount=?, received_at=? WHERE id=?");
             if ($stmt->execute([$data['supplier_id'], $data['user_id'], $data['total_amount'], $data['received_at'],$id])) {
 
-            $stmt = $this->pdo->prepare("UPDATE purchase_order_details SET purchase_order_id=?, stock_item_id=?, quantity=?, unit_price=?");
-            if ($stmt->execute([$id, $data['stock_item_id'], $data['quantity'], $data['unit_price']])) {
+            $stmt = $this->pdo->prepare("UPDATE purchase_order_details SET  stock_item_id=?, quantity=?, unit_price=?
+                                        WHERE purchase_order_id=?");
+            if ($stmt->execute([$data['stock_item_id'], $data['quantity'], $data['unit_price'],$id])) {
             return ['PODetailsId' => $this->pdo->lastInsertId(), 'message' => 'PODetails updated successfully.'];
             }
             }
