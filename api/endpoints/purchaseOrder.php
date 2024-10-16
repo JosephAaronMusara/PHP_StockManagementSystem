@@ -76,12 +76,14 @@ switch ($method) {
             $response['action'] = 'GraphQL Query';
             $response['received'] = $requestBody;
             $response['data'] = handleGraphQL($query);
+            $response['success'] = true;
             break;
         }
         $response['action'] = 'Add P-O';
         $response['received'] = $requestBody;
         $createResponse = $p_order->addPurchaseOrder($requestBody);
         $response = array_merge($response, $createResponse);
+        $response['success'] = true;
         break;
 
     case 'PUT':
