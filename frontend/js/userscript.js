@@ -122,17 +122,25 @@ document.addEventListener("DOMContentLoaded", function () {
         : "http://localhost/StockManagementSystem/api/endpoints/stock.php";
       const method = stockId ? "PUT" : "POST";
 
-      fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
+      const data = Object.fromEntries(formData);
+
+      const request = stockId 
+      ? axios.put(url, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        })
+      : axios.post(url, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+  
+        request
+        .then((response) => {
+          if (response.data.success) {
             document.getElementById("stockModal").style.display = "none";
             loadStockItems();
           } else {
