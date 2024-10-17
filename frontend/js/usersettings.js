@@ -5,17 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     userDetailsForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const userFormData = new FormData(document.getElementById('userDetailsForm'));
+        const userFormData = new FormData(this);
         const userId = localStorage.getItem('loggedInUserId');
 
-        fetch(`http://localhost/StockManagementSystem/api/endpoints/user.php?action=update&id=${userId}`, {
-            method: 'PUT', 
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(Object.fromEntries(userFormData.entries()))
+        const data = Object.fromEntries(userFormData.entries());
+
+
+        axios.put(`http://localhost/StockManagementSystem/api/endpoints/user.php?action=update&id=${userId}`,data, {
+            headers: { 
+                'Content-Type': 'application/json'
+            },
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        .then(response => {
+            if (response.data.success) {
                 alert('User details updated successfully');
             } else {
                 alert('Failed to update user details');
