@@ -30,22 +30,19 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     window.deleteSupplier= function (id) {
       if (confirm("Are you sure you want to delete this supplier?")) {
-        fetch(
-          `http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${id}`,
+        axios.delete(`http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${id}`,
           {
-            method: "DELETE",
             headers: {
               Accept: "application/json",
             },
           }
         )
-          .then((response) => response.json())
-          .then((data) => {
-              console.log(data['message']);
-            if (data.success) {
+          .then((response) => {
+            if (response.data.success) {
+              alert('Successfully Deleted!');
               loadSuppliers();
             } else {
-              console.error("Error deleting supplier:", data.message);
+              console.error("Error deleting supplier:", response.data.message);
             }
           })
           .catch((error) => console.error("Error:", error));
@@ -54,8 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
   
     window.editSupplier = function (id) {
         axios.get(`http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${id}`)
-        .then((data) => {
-          const item = data.data.data;
+        .then((response) => {
+          const item = response.data.data;
           document.getElementById("supplierId").value = item.id;
           document.getElementById("itemNameSupplier").value = item.name;
           document.getElementById("contact_info").value = item.contact_info;
@@ -76,24 +73,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const url = supplierId
           ? `http://localhost/StockManagementSystem/api/endpoints/supplier.php?id=${supplierId}`
           : "http://localhost/StockManagementSystem/api/endpoints/supplier.php";
-        const method = supplierId ? "PUT" : "POST";
-  
-        fetch(url, {
-          method: method,
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify(Object.fromEntries(formData)),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
+
+        const data = Object.fromEntries(formData);
+
+        const request = supplierId 
+        ? axios.put(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          })
+        : axios.post(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+    
+        request
+          .then((response) => {
+            if (response.data.success) {
               document.getElementById("supplierModal").style.display = "none";
               loadSuppliers();
             } else {
-              console.error("Error saving supplier item:", data.message);
-              document.getElementById("supplierModal").style.display = "none";
+              console.error("Error saving supplier item:", response.data.message);
               loadSuppliers();
             }
           })
@@ -102,11 +105,11 @@ document.addEventListener("DOMContentLoaded", function () {
   
     function loadSuppliers() {
       axios.get("http://localhost/StockManagementSystem/api/endpoints/supplier.php")
-        .then((data) => {
+        .then((response) => {
           const supplierTableBody = document.getElementById("supplierTableBody");
           supplierTableBody.innerHTML = "";
   
-          data.data.data.forEach((item) => {
+          response.data.data.forEach((item) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${item.name}</td>
