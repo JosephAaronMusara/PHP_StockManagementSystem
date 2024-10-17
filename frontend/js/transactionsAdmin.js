@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadTransactionsData() {
       axios.get(`http://localhost/StockManagementSystem/api/endpoints/transaction.php`)
-        .then((data) => {
+        .then((response) => {
           const transactionTableBody = document.getElementById("transactionTableBody");
           transactionTableBody.innerHTML = "";
   
-          data.data.data.forEach((sale) => {
+          response.data.data.forEach((sale) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                   <td>${sale.cashier}</td>
