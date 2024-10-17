@@ -61,7 +61,7 @@ class User
             }
             if (isset($data['password']) && $data['password'] === $data['confirm_password']) {
                 $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-                $setFields[] = "password = :password";
+                $setFields[] = "pwd = :pwd";
             } elseif (isset($data['password']) && $data['password'] !== $data['confirm_password']) {
                 return ['success' => false, 'message' => 'Passwords do not match.'];
             }
@@ -79,7 +79,7 @@ class User
                 $stmt->bindParam(':email', $data['email']);
             }
             if (isset($data['password'])) {
-                $stmt->bindParam(':password', $hashedPassword);
+                $stmt->bindParam(':pwd', $hashedPassword);
             }
             $stmt->bindParam(':id', $id);
             
