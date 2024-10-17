@@ -76,12 +76,14 @@ switch ($method) {
             $response['action'] = 'GraphQL Query';
             $response['received'] = $requestBody;
             $response['data'] = handleGraphQL($query);
+            $response['success'] = true;
             break;
         }
         $response['action'] = 'Create Supplier';
         $response['received'] = $requestBody;
         $createResponse = $supplier->addSupplier($requestBody);
         $response = array_merge($response, $createResponse);
+        $response['success'] = true;
         break;
 
     case 'PUT':
@@ -94,6 +96,7 @@ switch ($method) {
         $response['received'] = array_merge(['id' => $id], $requestBody);
         $updateResponse = $supplier->updateSupplier($id, $requestBody);
         $response = array_merge($response, $updateResponse);
+        $response['success'] = true;
         break;
 
     case 'DELETE':
@@ -106,6 +109,7 @@ switch ($method) {
         $response['received'] = ['id' => $id];
         $deleteResponse = $supplier->deleteSupplier($id);
         $response = array_merge($response, $deleteResponse);
+        $response['success'] = true;
         break;
 
     default:
