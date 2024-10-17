@@ -20,8 +20,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   axios.get('http://localhost/StockManagementSystem/api/endpoints/stock.php?fetch_items=true')
-        .then(data => {
-            if (data.data.success) {
+        .then(response => {
+            if (response.data.success) {
                 const itemDropdown = document.getElementById('supplier');
                 itemDropdown.innerHTML = '';
                 const categoryDropdown = document.getElementById('category');
@@ -35,20 +35,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 categoryOption.value=null;
                 categoryOption.textContent = 'Select Category :';
                 categoryDropdown.appendChild(categoryOption);  
-                data.data.data.forEach(item => {
+                response.data.data.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
                     option.textContent = item.name;
                     itemDropdown.appendChild(option);
                 });
-                data.data.data1.forEach(category => {
+                response.data.data1.forEach(category => {
                   const option = document.createElement('option');
                   option.value = category.id;
                   option.textContent = category.name;
                   categoryDropdown.appendChild(option);
               });
             } else {
-                console.error("Error fetching items:", data.data.message);
+                console.error("Error fetching items:", response.data.message);
             }
         })
         .catch(error => console.error("Error:", error));
@@ -71,22 +71,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   window.deleteStock = function (id) {
     if (confirm("Are you sure you want to delete this stock item?")) {
-      fetch(
-        `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
+      axios.delete(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
         {
-          method: "DELETE",
           headers: {
             Accept: "application/json",
           },
         }
       )
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data['message']);
-          if (data.success) {
+        .then((response) => {
+          if (response.data.success) {
             loadStockItems();
           } else {
-            console.error("Error deleting stock item:", data.message);
+            console.error("Error deleting stock item:", response.data.message);
           }
         })
         .catch((error) => console.error("Error:", error));
@@ -95,8 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.editStock = function (id) {
     axios.get(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`)
-      .then((data) => {
-        const item = data.data.data;
+      .then((response) => {
+        const item = response.data.data;
         document.getElementById("stockId").value = item.id;
         document.getElementById("itemName").value = item.name;
         document.getElementById("category").value = item.category_id;
@@ -153,11 +149,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadStockItems() {
     axios.get("http://localhost/StockManagementSystem/api/endpoints/stock.php")
-      .then((data) => {
+      .then((response) => {
         const stockTableBody = document.getElementById("stockTableBody");
         stockTableBody.innerHTML = "";
 
-        data.data.data.forEach((item) => {
+        response.data.data.forEach((item) => {
           const row = document.createElement("tr");
           row.innerHTML = `
                 <td>${item.name}</td>
