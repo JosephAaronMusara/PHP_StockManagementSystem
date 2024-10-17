@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const addStockButton = document.getElementById("addStockButton");
   const closeModalButton = document.querySelector(".close-button");
   const stockForm = document.getElementById("stockForm");
-  // const stockTable = document.getElementById("stock-table");
 
   const loggedInUsername = localStorage.getItem('loggedInUsername');
   document.getElementById('welcomeSpan').innerText = `Hello ${loggedInUsername.toUpperCase()}`;
@@ -94,22 +93,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   window.deleteStock = function (id) {
     if (confirm("Are you sure you want to delete this stock item?")) {
-      fetch(
-        `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
+      axios.delete(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`,
         {
-          method: "DELETE",
           headers: {
             Accept: "application/json",
           },
         }
       )
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data['message']);
-          if (data.success) {
+        .then((response) => {
+          if (response.data.success) {
             loadStockItems();
           } else {
-            console.error("Error deleting stock item:", data.message);
+            console.error("Error deleting stock item:", response.data.message);
           }
         })
         .catch((error) => console.error("Error:", error));
@@ -118,8 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   window.editStock = function (id) {
       axios.get(`http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${id}`)
-      .then((data) => {
-        const item = data.data.data;
+      .then((response) => {
+        const item = response.data.data;
         document.getElementById("stockId").value = item.id;
         document.getElementById("itemName").value = item.name;
         document.getElementById("category").value = item.category_id;
@@ -143,24 +138,30 @@ document.addEventListener("DOMContentLoaded", function () {
       const url = stockId
         ? `http://localhost/StockManagementSystem/api/endpoints/stock.php?id=${stockId}`
         : "http://localhost/StockManagementSystem/api/endpoints/stock.php";
-      const method = stockId ? "PUT" : "POST";
 
-      fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
+      const data = Object.fromEntries(formData);
+      
+      const request = stockId 
+        ? axios.put(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          })
+        : axios.post(url, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+    
+      request
+        .then((response) => {
+          if (response.data.success) {
             document.getElementById("stockModal").style.display = "none";
             loadStockItems();
           } else {
-            console.error("Error saving stock item:", data.message);
-            document.getElementById("stockModal").style.display = "none";
+            alert("Error saving stock item:", response.data.message);
             loadStockItems();
           }
         })
@@ -169,10 +170,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadStockItems() {
     axios.get("http://localhost/StockManagementSystem/api/endpoints/stock.php")
-      .then((data) => {
+      .then((response) => {
         const adminStockTableBody = document.getElementById("adminStockTableBody");
         adminStockTableBody.innerHTML ="";
-        data.data.data.forEach((item) => {
+        response.data.data.forEach((item) => {
             const adminStockRow = document.createElement("tr");
             adminStockRow.innerHTML = `
                   <td>${item.name}</td>
