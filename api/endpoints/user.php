@@ -86,6 +86,10 @@ switch ($method) {
             $response['received'] = array_merge(['id' => $id], $requestBody);
             $updateResponse = $user->updateUserDetails($id, $requestBody);
             $response = array_merge($response, $updateResponse);
+
+            if ($updateResponse['success'] && isset($requestBody['theme'])) {
+                $response['theme'] = $requestBody['theme'];
+            }
         }
         break;
     case 'DELETE':

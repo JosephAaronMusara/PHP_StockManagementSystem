@@ -14,14 +14,16 @@ class User
         }
 
         $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $theme = $data['theme'] ?? 'light';
 
-        $sql = "INSERT INTO users (username, email, role, pwd) VALUES (:username, :email, :role, :password)";
+        $sql = "INSERT INTO users (username, email, role, pwd, theme) VALUES (:username, :email, :role, :password, :theme)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':username', $data['username']);
         $stmt->bindParam(':email', $data['email']);
-        $stmt->bindParam(':role',$data['role']);
+        $stmt->bindParam(':role', $data['role']);
         $stmt->bindParam(':password', $hashedPassword);
-        
+        $stmt->bindParam(':theme', $theme);
+
         if ($stmt->execute()) {
             return ['success' => true, 'message' => 'User created successfully.'];
         }
@@ -36,10 +38,17 @@ class User
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($data['password'], $user['pwd'])) {
-            //session_start();
+            // Store session data
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
-            return ['success' => true, 'message' => 'Login successful','role'=>$user['role'],'user_id'=>$user['id'],'username'=>$user['username']];
+            return [
+                'success' => true, 
+                'message' => 'Login successful',
+                'role' => $user['role'],
+                'user_id' => $user['id'],
+                'username' => $user['username'],
+                'theme' => $user['theme']
+            ];
         }
         return ['success' => false, 'message' => 'Invalid username or password'];
     }
@@ -51,47 +60,51 @@ class User
         return ['success' => true, 'message' => 'Logged out successfully'];
     }
     
-        public function updateUserDetails($id, $data) {
-            $setFields = [];
-            if (isset($data['username'])) {
-                $setFields[] = "username = :username";
-            }
-            if (isset($data['email'])) {
-                $setFields[] = "email = :email";
-            }
-            if (isset($data['password']) && $data['password'] === $data['confirm_password']) {
-                $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-                $setFields[] = "pwd = :pwd";
-            } elseif (isset($data['password']) && $data['password'] !== $data['confirm_password']) {
-                return ['success' => false, 'message' => 'Passwords do not match.'];
-            }
-    
-            if (empty($setFields)) {
-                return ['success' => false, 'message' => 'No data to update.'];
-            }
-    
-            $sql = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            if (isset($data['username'])) {
-                $stmt->bindParam(':username', $data['username']);
-            }
-            if (isset($data['email'])) {
-                $stmt->bindParam(':email', $data['email']);
-            }
-            if (isset($data['password'])) {
-                $stmt->bindParam(':pwd', $hashedPassword);
-            }
-            $stmt->bindParam(':id', $id);
-            
-            if ($stmt->execute()) {
-                return ['success' => true, 'message' => 'User details updated successfully.'];
-            }
-            return ['success' => false, 'message' => 'Failed to update user details.'];
+    public function updateUserDetails($id, $data) {
+        $setFields = [];
+        if (isset($data['username'])) {
+            $setFields[] = "username = :username";
         }
-    
+        if (isset($data['email'])) {
+            $setFields[] = "email = :email";
+        }
+        if (isset($data['password']) && $data['password'] === $data['confirm_password']) {
+            $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+            $setFields[] = "pwd = :pwd";
+        } elseif (isset($data['password']) && $data['password'] !== $data['confirm_password']) {
+            return ['success' => false, 'message' => 'Passwords do not match.'];
+        }
+        if (isset($data['theme'])) {
+            $setFields[] = "theme = :theme"; // theme update
+        }
 
-    public function deleteUser($id)
-    {
+        if (empty($setFields)) {
+            return ['success' => false, 'message' => 'No data to update.'];
+        }
+
+        $sql = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        if (isset($data['username'])) {
+            $stmt->bindParam(':username', $data['username']);
+        }
+        if (isset($data['email'])) {
+            $stmt->bindParam(':email', $data['email']);
+        }
+        if (isset($data['password'])) {
+            $stmt->bindParam(':pwd', $hashedPassword);
+        }
+        if (isset($data['theme'])) {
+            $stmt->bindParam(':theme', $data['theme']);
+        }
+        $stmt->bindParam(':id', $id);
+
+        if ($stmt->execute()) {
+            return ['success' => true, 'message' => 'User details updated successfully.'];
+        }
+        return ['success' => false, 'message' => 'Failed to update user details.'];
+    }
+
+    public function deleteUser($id) {
         $stmt = $this->pdo->prepare("DELETE FROM users WHERE id = ?");
         if ($stmt->execute([$id])) {
             return ['message' => 'User deleted successfully.'];
@@ -99,8 +112,7 @@ class User
         return ['error' => 'Failed to delete user.'];
     }
 
-    public function logout()
-    {
+    public function logout() {
         session_start();
         session_destroy();
         return true;
